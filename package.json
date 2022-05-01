@@ -4,5 +4,10 @@
   "description": "ENS DAO constiution book claim",
   "main": "index.js",
   "author": "ensdomains",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@rainbow-me/rainbowkit": "^0.0.2",
+    "ethers": "^5.6.4",
+    "wagmi": "^0.3.1"
+  }
 }
