@@ -1,0 +1,8 @@
+{
+  "name": "constitution-book-claim",
+  "version": "1.0.0",
+  "description": "ENS DAO constiution book claim",
+  "main": "index.js",
+  "author": "ensdomains",
+  "license": "MIT"
+}
