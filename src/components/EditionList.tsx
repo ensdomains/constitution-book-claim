@@ -276,7 +276,7 @@ const LimitedEdition = ({
           <LimitedEditionName>Limited Edition</LimitedEditionName>
           <EditionTagContainer>
             <LimitedEditionTag>Auction</LimitedEditionTag>
-            <LimitedEditionTag>{price}ENS Each</LimitedEditionTag>
+            <LimitedEditionTag>{price} ENS</LimitedEditionTag>
           </EditionTagContainer>
         </EditionDetails>
         <EditionAction>
@@ -290,8 +290,9 @@ const LimitedEdition = ({
         </EditionAction>
       </LimitedEditionContainer>
       <LimitedEditionDescription>
-        There are 25 copies available for auction, with the edition’s total
-        production limited to 50.
+        25 numbered copies from a limited edition of 50 are available.
+        Bid in a batch auction for a 'book token' that can be redeemed
+        for a physical copy of the book.
       </LimitedEditionDescription>
     </div>
   );
@@ -346,7 +347,7 @@ export const EditionList = ({ auction }: { auction: Auction }) => {
         link="https://ensdao.eth.link/constitution.pdf"
       />
       <EditionTemplate
-        tags={["$59.99", "72 Sold"]}
+        tags={["$114.39"]}
         name="Unlimited Edition"
         linkTitle="Buy"
         link="#"
