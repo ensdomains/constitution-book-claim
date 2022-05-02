@@ -30,7 +30,7 @@ body {
 }
 
 body {
-  background: radial-gradient(50% 50% at 50% 50%, rgba(82, 152, 255, 0.062) 0%, rgba(255, 255, 255, 0) 100%), #F7F7F7;
+  background: radial-gradient(50% 50% at 50% 50%, rgba(183, 120, 255, 0.062) 0%, rgba(183, 120, 255, 0) 100%), #F6F6F6;
   min-height: 100vh;
 }
 
@@ -41,8 +41,8 @@ a {
 
 * {
   box-sizing: border-box;
-  font-feature-settings: "ss01" on, "ss03" on;
-  -moz-font-feature-settings: "ss01" on, "ss03" on;
+  font-feature-settings: "ss01" on, "ss03" on, "ss04" on;
+  -moz-font-feature-settings: "ss01" on, "ss03" on, "ss04" on;
 }
 `;
 
