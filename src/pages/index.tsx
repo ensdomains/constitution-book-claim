@@ -99,6 +99,7 @@ const InnerContentFlex = styled.div`
   justify-content: center;
   gap: ${tokens.space["4"]};
   flex-gap: ${tokens.space["4"]};
+  max-width: ${tokens.space["256"]};
 
   ${mq.medium.min`
     margin-bottom: max(15vh, ${tokens.space["8"]});

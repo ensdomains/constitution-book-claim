@@ -276,7 +276,7 @@ const LimitedEdition = ({
           <LimitedEditionName>Limited Edition</LimitedEditionName>
           <EditionTagContainer>
             <LimitedEditionTag>Auction</LimitedEditionTag>
-            <LimitedEditionTag>{price}ENS Each</LimitedEditionTag>
+            <LimitedEditionTag>{price.toFixed(2)}ENS Each</LimitedEditionTag>
           </EditionTagContainer>
         </EditionDetails>
         <EditionAction>
