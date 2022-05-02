@@ -1,5 +1,9 @@
 import { tokens, Typography } from "@ensdomains/thorin";
-import type { NextPage } from "next";
+import type {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import Head from "next/head";
 import styled from "styled-components";
 import Logo from "../assets/Logo.svg";
@@ -106,34 +110,9 @@ const InnerContentFlex = styled.div`
   `}
 `;
 
-const Home: NextPage = () => {
-  const auction = {
-    auctionId: 219,
-    order: { price: 0.0000875, volume: 4000000 },
-    exactOrder:
-      "0x000000000000000000000012f939c99edab8000000034f086f3b33b684000000",
-    symbolAuctioningToken: "ALLUO",
-    symbolBiddingToken: "WETH",
-    addressAuctioningToken: "0x1e5193ccc53f25638aa22a940af899b692e10b09",
-    addressBiddingToken: "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2",
-    decimalsAuctioningToken: "0x12",
-    decimalsBiddingToken: "0x12",
-    endTimeTimestamp: 1651701540,
-    orderCancellationEndDate: 1651097700,
-    startingTimestamp: 1651095773,
-    minimumBiddingAmountPerOrder: "0x3e2c284391c000",
-    minFundingThreshold: "0x1e5b8fa8fe2ac0000",
-    allowListManager: "0x0000000000000000000000000000000000000000",
-    allowListSigner: "0x0000000000000000000000000000000000000000",
-    currentClearingPrice: 0.0000875,
-    currentBiddingAmount: "0x2e685921ee2fdbe00",
-    isAtomicClosureAllowed: false,
-    isPrivateAuction: false,
-    chainId: "0x1",
-    interestScore: 53.5043316094,
-    usdAmountTraded: 0,
-  };
-
+const Home: NextPage = ({
+  auction,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <BasicWrapper>
       <Head>
@@ -166,6 +145,19 @@ const Home: NextPage = () => {
       </BasicContainer>
     </BasicWrapper>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const auctionRes = await fetch(
+    "https://ido-api-mainnet.gnosis.io/api/v1/get_auction_with_details/219"
+  );
+  const auction = await auctionRes.json();
+
+  return {
+    props: {
+      auction,
+    },
+  };
 };
 
 export default Home;
