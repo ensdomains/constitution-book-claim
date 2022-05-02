@@ -131,10 +131,10 @@ const Home: NextPage = ({
               legitimate for the DAO to take.
             </Subtitle>
             <Flavour>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam
-              dignissim enim mauris, quis viverra lacus feugiat in. Morbi et
-              nibh lorem. Morbi lorem massa, ullamcorper dictum sagittis sit
-              amet, dapibus vitae orci.
+              The constitution, along with all 48,823 signers who provided an ENS name,
+              is available as a free digital download, as well as a quality hardcover
+              book, and a beautiful no-expense-spared limited edition of 50 slipcased
+              copies.
             </Flavour>
           </Heading>
           <InnerContentFlex>
