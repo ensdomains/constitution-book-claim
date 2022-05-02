@@ -1,9 +1,11 @@
 import { ArrowRightSVG, tokens } from "@ensdomains/thorin";
-import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { renderToString } from "react-dom/server";
 import styled, { css, keyframes } from "styled-components";
-import { TwinkleType } from "../assets/LimitedEditionGradient";
+import {
+  LimitedEditionGradient,
+  TwinkleType,
+} from "../assets/LimitedEditionGradient";
 
 const EditionName = styled.h4`
   font-size: ${tokens.fontSizes.extraLarge};
@@ -156,83 +158,74 @@ const LimitedEditionDescription = styled.p`
   padding: 0 ${tokens.space["2"]};
 `;
 
-const LimitedEditionContainer = dynamic<any>(
-  () =>
-    import("../assets/LimitedEditionGradient").then((mod) => {
-      const LimitedEditionGradient = mod.LimitedEditionGradient;
-      const generateTwinkle = (): TwinkleType => {
-        const gradient = [];
-        for (let i = 0; i < 17; i++) {
-          gradient.push(Math.random());
-        }
-        return gradient as TwinkleType;
-      };
+const generateTwinkle = (): TwinkleType => {
+  const gradient = [];
+  for (let i = 0; i < 17; i++) {
+    gradient.push(Math.random());
+  }
+  return gradient as TwinkleType;
+};
 
-      const generateTwinkleFrame = () => css`
-        background: url("data:image/svg+xml;base64,${Buffer.from(
-          renderToString(LimitedEditionGradient(generateTwinkle()))
-        ).toString("base64")}");
-        background-size: cover;
-        background-position: bottom;
-      `;
-
-      const TwinkleKeyframes = keyframes`
-    0% {
-      ${generateTwinkleFrame()}
-    }
-    10% {
-      ${generateTwinkleFrame()}
-    }
-    20% {
-      ${generateTwinkleFrame()}
-    }
-    30% {
-      ${generateTwinkleFrame()}
-    }
-    40% { 
-      ${generateTwinkleFrame()}
-    }
-    50% {
-      ${generateTwinkleFrame()}
-    }
-    60% {
-      ${generateTwinkleFrame()}
-    }
-    70% {
-      ${generateTwinkleFrame()}
-    }
-    80% {
-      ${generateTwinkleFrame()}
-    }
-    90% {
-      ${generateTwinkleFrame()}
-    }
-    100% {
-      ${generateTwinkleFrame()}
-    }
+const generateTwinkleFrame = () => css`
+  background: url("data:image/svg+xml;base64,${Buffer.from(
+    renderToString(LimitedEditionGradient(generateTwinkle()))
+  ).toString("base64")}");
+  background-size: cover;
+  background-position: bottom;
 `;
 
-      return styled(Edition)`
-        animation: ${TwinkleKeyframes} 15s linear alternate infinite;
-        background-color: none;
-        background-size: cover;
-        background-position: bottom;
-        border: 2px solid #7a59da;
-        transition: all 0.15s ease-in-out;
+const TwinkleKeyframes = keyframes`
+0% {
+${generateTwinkleFrame()}
+}
+10% {
+${generateTwinkleFrame()}
+}
+20% {
+${generateTwinkleFrame()}
+}
+30% {
+${generateTwinkleFrame()}
+}
+40% { 
+${generateTwinkleFrame()}
+}
+50% {
+${generateTwinkleFrame()}
+}
+60% {
+${generateTwinkleFrame()}
+}
+70% {
+${generateTwinkleFrame()}
+}
+80% {
+${generateTwinkleFrame()}
+}
+90% {
+${generateTwinkleFrame()}
+}
+100% {
+${generateTwinkleFrame()}
+}
+`;
 
-        &:hover {
-          filter: brightness(1.2);
+const LimitedEditionContainer = styled(Edition)`
+  animation: ${TwinkleKeyframes} 15s linear alternate infinite;
+  background-color: none;
+  background-size: cover;
+  background-position: bottom;
+  border: 2px solid #7a59da;
+  transition: all 0.15s ease-in-out;
 
-          ${LimitedEditionArrow}, ${LimitedEditionLinkTitle} {
-            opacity: 1;
-          }
-        }
-      `;
-    }),
-  {
-    ssr: false,
+  &:hover {
+    filter: brightness(1.2);
+
+    ${LimitedEditionArrow}, ${LimitedEditionLinkTitle} {
+      opacity: 1;
+    }
   }
-);
+`;
 
 const LimitedEdition = ({
   price,
