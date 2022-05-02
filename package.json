@@ -1,13 +1,30 @@
 {
   "name": "constitution-book-claim",
-  "version": "1.0.0",
-  "description": "ENS DAO constiution book claim",
-  "main": "index.js",
-  "author": "ensdomains",
-  "license": "MIT",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
   "dependencies": {
+    "@ensdomains/thorin": "^0.5.3",
     "@rainbow-me/rainbowkit": "^0.0.2",
     "ethers": "^5.6.4",
-    "wagmi": "^0.3.1"
+    "next": "12.1.5",
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
+    "styled-components": "^5.3.5",
+    "wagmi": "^0.2.25"
+  },
+  "devDependencies": {
+    "@types/node": "17.0.31",
+    "@types/react": "18.0.8",
+    "@types/react-dom": "18.0.3",
+    "@types/styled-components": "^5.1.25",
+    "eslint": "8.14.0",
+    "eslint-config-next": "12.1.5",
+    "typescript": "4.6.4"
   }
 }
