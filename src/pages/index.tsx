@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Logo from "../assets/Logo.svg";
 import { EditionList } from "../components/EditionList";
 import { ImageCarousell } from "../components/ImageCarousell";
+import mq from "../utils/mediaQuery";
 
 const StyledLogo = styled(Logo)`
   width: 135px;
@@ -16,7 +17,6 @@ const Header = styled.header`
   justify-content: center;
   width: 100%;
   padding: ${tokens.space["4"]};
-  min-height: ${tokens.space["32"]};
 `;
 
 const BasicWrapper = styled.div`
@@ -32,7 +32,7 @@ const BasicContainer = styled.div`
   flex-direction: column;
   width: 100%;
   min-height: 100vh;
-  padding: 5%;
+  padding: min(5%, 40px);
   flex-gap: ${tokens.space["8"]};
   gap: ${tokens.space["8"]};
 `;
@@ -87,6 +87,23 @@ const Flavour = styled(Typography)`
   text-align: center;
 `;
 
+const InnerContentFlex = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: ${tokens.space["4"]};
+  flex-gap: ${tokens.space["4"]};
+
+  ${mq.medium.min`
+    margin-bottom: max(15vh, ${tokens.space["8"]});
+    gap: ${tokens.space["8"]};
+    flex-gap: ${tokens.space["8"]};
+    flex-direction: row;
+    align-items: flex-start;
+  `}
+`;
+
 const Home: NextPage = () => {
   return (
     <BasicWrapper>
@@ -109,8 +126,10 @@ const Home: NextPage = () => {
               amet, dapibus vitae orci.
             </Flavour>
           </Heading>
-          <ImageCarousell />
-          <EditionList />
+          <InnerContentFlex>
+            <ImageCarousell />
+            <EditionList />
+          </InnerContentFlex>
         </Content>
       </BasicContainer>
     </BasicWrapper>

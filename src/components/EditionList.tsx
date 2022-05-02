@@ -1,7 +1,10 @@
 import { ArrowRightSVG, tokens } from "@ensdomains/thorin";
 import { renderToString } from "react-dom/server";
-import styled from "styled-components";
-import { LimitedEditionGradient } from "../assets/LimitedEditionGradient";
+import styled, { css, keyframes } from "styled-components";
+import {
+  LimitedEditionGradient,
+  TwinkleType,
+} from "../assets/LimitedEditionGradient";
 
 const editions = [
   {
@@ -14,20 +17,6 @@ const editions = [
     tags: ["$59.99", "72 Sold"],
   },
 ];
-
-const Edition = styled.a`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  height: ${tokens.space["28"]};
-  background: ${tokens.colors.base.white};
-  padding: 0 ${tokens.space["4"]};
-  border-radius: ${tokens.radii["2.5xLarge"]};
-  box-shadow: ${({ theme }) => tokens.boxShadows[theme.mode]["0.25"]};
-  border: 1px solid rgba(51, 51, 51, 0.15);
-`;
-
 const EditionName = styled.h4`
   font-size: ${tokens.fontSizes.extraLarge};
   font-weight: ${tokens.fontWeights.bold};
@@ -73,7 +62,9 @@ const EditionTag = styled.span`
 const EditionLinkTitle = styled.p`
   font-size: ${tokens.fontSizes.large};
   font-weight: ${tokens.fontWeights.bold};
-  color: rgba(51, 51, 51, 0.4);
+  color: rgb(51, 51, 51);
+  opacity: 0.4;
+  transition: opacity 0.15s ease-in-out;
 `;
 
 const EditionArrow = styled(ArrowRightSVG)`
@@ -82,6 +73,32 @@ const EditionArrow = styled(ArrowRightSVG)`
   stroke-width: 4px;
   color: #000000;
   opacity: 0.4;
+
+  transition: opacity 0.15s ease-in-out;
+`;
+
+const Edition = styled.a`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: ${tokens.space["28"]};
+  background: ${tokens.colors.base.white};
+  padding: 0 ${tokens.space["4"]};
+  border-radius: ${tokens.radii["2.5xLarge"]};
+  box-shadow: ${({ theme }) => tokens.boxShadows[theme.mode]["0.25"]};
+  border: 1px solid rgba(51, 51, 51, 0.15);
+
+  transition: all 0.15s ease-in-out;
+
+  &:hover {
+    transform: translateY(-1px);
+    background-color: #f5f5f5;
+
+    ${EditionArrow}, ${EditionLinkTitle} {
+      opacity: 0.7;
+    }
+  }
 `;
 
 const EditionTemplate = ({
@@ -111,13 +128,57 @@ const EditionTemplate = ({
   </Edition>
 );
 
-const LimitedEditionContainer = styled(Edition)`
+// generate array of 17 numbers between 0.3 and 1
+const generateTwinkle = (): TwinkleType => {
+  const gradient = [];
+  for (let i = 0; i < 17; i++) {
+    gradient.push(Math.random());
+  }
+  return gradient as TwinkleType;
+};
+
+const generateTwinkleFrame = () => css`
   background: url("data:image/svg+xml;base64,${Buffer.from(
-    renderToString(LimitedEditionGradient())
+    renderToString(LimitedEditionGradient(generateTwinkle()))
   ).toString("base64")}");
   background-size: cover;
   background-position: bottom;
-  border: 2px solid #7a59da;
+`;
+
+const TwinkleKeyframes = keyframes`
+    0% {
+      ${generateTwinkleFrame()}
+    }
+    10% {
+      ${generateTwinkleFrame()}
+    }
+    20% {
+      ${generateTwinkleFrame()}
+    }
+    30% {
+      ${generateTwinkleFrame()}
+    }
+    40% { 
+      ${generateTwinkleFrame()}
+    }
+    50% {
+      ${generateTwinkleFrame()}
+    }
+    60% {
+      ${generateTwinkleFrame()}
+    }
+    70% {
+      ${generateTwinkleFrame()}
+    }
+    80% {
+      ${generateTwinkleFrame()}
+    }
+    90% {
+      ${generateTwinkleFrame()}
+    }
+    100% {
+      ${generateTwinkleFrame()}
+    }
 `;
 
 const LimitedEditionName = styled(EditionName)`
@@ -131,6 +192,7 @@ const LimitedEditionTag = styled(EditionTag)`
 
 const LimitedEditionLinkTitle = styled(EditionLinkTitle)`
   color: #dfd5f9;
+  opacity: 1;
 `;
 
 const LimitedEditionArrow = styled(EditionArrow)`
@@ -157,6 +219,23 @@ const LimitedEditionDescription = styled.p`
   line-height: ${tokens.lineHeights["1.375"]};
   margin-top: ${tokens.space["2"]};
   padding: 0 ${tokens.space["2"]};
+`;
+
+const LimitedEditionContainer = styled(Edition)`
+  animation: ${TwinkleKeyframes} 15s linear alternate infinite;
+  background-color: none;
+  background-size: cover;
+  background-position: bottom;
+  border: 2px solid #7a59da;
+  transition: all 0.15s ease-in-out;
+
+  &:hover {
+    filter: brightness(1.2);
+
+    ${LimitedEditionArrow}, ${LimitedEditionLinkTitle} {
+      opacity: 1;
+    }
+  }
 `;
 
 const LimitedEdition = () => {

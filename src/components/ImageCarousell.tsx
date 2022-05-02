@@ -23,7 +23,8 @@ const Preview = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: ${tokens.space["96"]};
+  width: 100%;
+  max-width: ${tokens.space["80"]};
 `;
 
 const ImageThumbnailContainer = styled.div`
@@ -39,10 +40,14 @@ const ImageThumbnailContainer = styled.div`
 const ImageThumnail = styled.div<{ $selected: boolean }>`
   display: flex;
   align-items: center;
+  background-color: white;
   justify-content: center;
   border: 1px solid rgba(51, 51, 51, 0.15);
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
   & > span {
     opacity: 0.25 !important;
+    transition: all 0.15s ease-in-out;
   }
   ${({ $selected }) =>
     $selected &&
@@ -52,6 +57,13 @@ const ImageThumnail = styled.div<{ $selected: boolean }>`
         opacity: 1 !important;
     }
 `}
+  &:hover {
+    filter: brightness(0.95);
+    & > span {
+      opacity: 0.8 !important;
+    }
+  }
+
   border-radius: ${tokens.radii["extraLarge"]};
   width: ${tokens.space["12"]};
   height: ${tokens.space["16"]};
