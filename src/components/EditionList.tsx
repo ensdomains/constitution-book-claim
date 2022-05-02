@@ -290,9 +290,9 @@ const LimitedEdition = ({
         </EditionAction>
       </LimitedEditionContainer>
       <LimitedEditionDescription>
-        25 numbered copies from a limited edition of 50 are available.
-        Bid in a batch auction for a 'book token' that can be redeemed
-        for a physical copy of the book.
+        25 numbered copies from a limited edition of 50 are available. Bid in a
+        batch auction for a &apos;book token&apos; that can be redeemed for a
+        physical copy of the book.
       </LimitedEditionDescription>
     </div>
   );
