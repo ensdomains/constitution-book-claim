@@ -1,5 +1,6 @@
 import { ArrowRightSVG, tokens } from "@ensdomains/thorin";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { renderToString } from "react-dom/server";
 import styled, { css, keyframes } from "styled-components";
 import { TwinkleType } from "../assets/LimitedEditionGradient";
@@ -233,7 +234,41 @@ const LimitedEditionContainer = dynamic<any>(
   }
 );
 
-const LimitedEdition = ({ price }: { price: number }) => {
+const LimitedEdition = ({
+  price,
+  endTime,
+}: {
+  price: number;
+  endTime: number;
+}) => {
+  const [end, setEnd] = useState("00:00:00");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const diff = endTime * 1000 - Date.now();
+      const days = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff / 3600000) % 24)
+        .toString()
+        .padStart(2, "0");
+      const minutes = Math.floor((diff / 60000) % 60)
+        .toString()
+        .padStart(2, "0");
+      const seconds = Math.floor((diff / 1000) % 60)
+        .toString()
+        .padStart(2, "0");
+      if (diff < 0) {
+        clearInterval(interval);
+        setEnd("");
+      }
+      if (days === 0) {
+        setEnd(`${hours}:${minutes}:${seconds}`);
+      } else {
+        setEnd(`${days} ${days > 1 ? "days" : "day"}`);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [endTime]);
+
   return (
     <div>
       <LimitedEditionContainer as="a" href="#">
@@ -247,7 +282,9 @@ const LimitedEdition = ({ price }: { price: number }) => {
         <EditionAction>
           <LimitedEditionAuctionDetails>
             <LimitedEditionLinkTitle>Bid</LimitedEditionLinkTitle>
-            <LimitedEditionBidTime>Ends in 9 days</LimitedEditionBidTime>
+            <LimitedEditionBidTime>
+              {end === "" ? "Auction ended" : `Ends in ${end}`}
+            </LimitedEditionBidTime>
           </LimitedEditionAuctionDetails>
           <LimitedEditionArrow />
         </EditionAction>
@@ -314,7 +351,10 @@ export const EditionList = ({ auction }: { auction: Auction }) => {
         linkTitle="Buy"
         link="#"
       />
-      <LimitedEdition price={auction.order.price} />
+      <LimitedEdition
+        price={auction.order.price}
+        endTime={auction.endTimeTimestamp}
+      />
     </Wrapper>
   );
 };
