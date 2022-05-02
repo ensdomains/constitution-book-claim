@@ -1,22 +1,9 @@
 import { ArrowRightSVG, tokens } from "@ensdomains/thorin";
+import dynamic from "next/dynamic";
 import { renderToString } from "react-dom/server";
 import styled, { css, keyframes } from "styled-components";
-import {
-  LimitedEditionGradient,
-  TwinkleType,
-} from "../assets/LimitedEditionGradient";
+import { TwinkleType } from "../assets/LimitedEditionGradient";
 
-const editions = [
-  {
-    name: "Digital Edition",
-    tags: ["Free"],
-    linkTitle: "Download",
-  },
-  {
-    name: "Unlimited Edition",
-    tags: ["$59.99", "72 Sold"],
-  },
-];
 const EditionName = styled.h4`
   font-size: ${tokens.fontSizes.extraLarge};
   font-weight: ${tokens.fontWeights.bold};
@@ -89,7 +76,7 @@ const Edition = styled.a`
   box-shadow: ${({ theme }) => tokens.boxShadows[theme.mode]["0.25"]};
   border: 1px solid rgba(51, 51, 51, 0.15);
 
-  transition: all 0.15s ease-in-out;
+  transition: background 0.15s ease-in-out, transform 0.15s ease-in-out;
 
   &:hover {
     transform: translateY(-1px);
@@ -127,59 +114,6 @@ const EditionTemplate = ({
     </EditionAction>
   </Edition>
 );
-
-// generate array of 17 numbers between 0.3 and 1
-const generateTwinkle = (): TwinkleType => {
-  const gradient = [];
-  for (let i = 0; i < 17; i++) {
-    gradient.push(Math.random());
-  }
-  return gradient as TwinkleType;
-};
-
-const generateTwinkleFrame = () => css`
-  background: url("data:image/svg+xml;base64,${Buffer.from(
-    renderToString(LimitedEditionGradient(generateTwinkle()))
-  ).toString("base64")}");
-  background-size: cover;
-  background-position: bottom;
-`;
-
-const TwinkleKeyframes = keyframes`
-    0% {
-      ${generateTwinkleFrame()}
-    }
-    10% {
-      ${generateTwinkleFrame()}
-    }
-    20% {
-      ${generateTwinkleFrame()}
-    }
-    30% {
-      ${generateTwinkleFrame()}
-    }
-    40% { 
-      ${generateTwinkleFrame()}
-    }
-    50% {
-      ${generateTwinkleFrame()}
-    }
-    60% {
-      ${generateTwinkleFrame()}
-    }
-    70% {
-      ${generateTwinkleFrame()}
-    }
-    80% {
-      ${generateTwinkleFrame()}
-    }
-    90% {
-      ${generateTwinkleFrame()}
-    }
-    100% {
-      ${generateTwinkleFrame()}
-    }
-`;
 
 const LimitedEditionName = styled(EditionName)`
   color: white;
@@ -221,22 +155,83 @@ const LimitedEditionDescription = styled.p`
   padding: 0 ${tokens.space["2"]};
 `;
 
-const LimitedEditionContainer = styled(Edition)`
-  animation: ${TwinkleKeyframes} 15s linear alternate infinite;
-  background-color: none;
-  background-size: cover;
-  background-position: bottom;
-  border: 2px solid #7a59da;
-  transition: all 0.15s ease-in-out;
+const LimitedEditionContainer = dynamic<any>(
+  () =>
+    import("../assets/LimitedEditionGradient").then((mod) => {
+      const LimitedEditionGradient = mod.LimitedEditionGradient;
+      const generateTwinkle = (): TwinkleType => {
+        const gradient = [];
+        for (let i = 0; i < 17; i++) {
+          gradient.push(Math.random());
+        }
+        return gradient as TwinkleType;
+      };
 
-  &:hover {
-    filter: brightness(1.2);
+      const generateTwinkleFrame = () => css`
+        background: url("data:image/svg+xml;base64,${Buffer.from(
+          renderToString(LimitedEditionGradient(generateTwinkle()))
+        ).toString("base64")}");
+        background-size: cover;
+        background-position: bottom;
+      `;
 
-    ${LimitedEditionArrow}, ${LimitedEditionLinkTitle} {
-      opacity: 1;
+      const TwinkleKeyframes = keyframes`
+    0% {
+      ${generateTwinkleFrame()}
     }
-  }
+    10% {
+      ${generateTwinkleFrame()}
+    }
+    20% {
+      ${generateTwinkleFrame()}
+    }
+    30% {
+      ${generateTwinkleFrame()}
+    }
+    40% { 
+      ${generateTwinkleFrame()}
+    }
+    50% {
+      ${generateTwinkleFrame()}
+    }
+    60% {
+      ${generateTwinkleFrame()}
+    }
+    70% {
+      ${generateTwinkleFrame()}
+    }
+    80% {
+      ${generateTwinkleFrame()}
+    }
+    90% {
+      ${generateTwinkleFrame()}
+    }
+    100% {
+      ${generateTwinkleFrame()}
+    }
 `;
+
+      return styled(Edition)`
+        animation: ${TwinkleKeyframes} 15s linear alternate infinite;
+        background-color: none;
+        background-size: cover;
+        background-position: bottom;
+        border: 2px solid #7a59da;
+        transition: all 0.15s ease-in-out;
+
+        &:hover {
+          filter: brightness(1.2);
+
+          ${LimitedEditionArrow}, ${LimitedEditionLinkTitle} {
+            opacity: 1;
+          }
+        }
+      `;
+    }),
+  {
+    ssr: false,
+  }
+);
 
 const LimitedEdition = () => {
   return (
@@ -246,7 +241,7 @@ const LimitedEdition = () => {
           <LimitedEditionName>Limited Edition</LimitedEditionName>
           <EditionTagContainer>
             <LimitedEditionTag>Auction</LimitedEditionTag>
-            <LimitedEditionTag>0/25 Sold</LimitedEditionTag>
+            <LimitedEditionTag>33.52ETH Each</LimitedEditionTag>
           </EditionTagContainer>
         </EditionDetails>
         <EditionAction>

@@ -1,5 +1,6 @@
 import { tokens, Typography } from "@ensdomains/thorin";
 import type { NextPage } from "next";
+import Head from "next/head";
 import styled from "styled-components";
 import Logo from "../assets/Logo.svg";
 import { EditionList } from "../components/EditionList";
@@ -107,6 +108,9 @@ const InnerContentFlex = styled.div`
 const Home: NextPage = () => {
   return (
     <BasicWrapper>
+      <Head>
+        <title>Constitution Book - ENS DAO</title>
+      </Head>
       <BasicContainer>
         <Header>
           <StyledLogo />
