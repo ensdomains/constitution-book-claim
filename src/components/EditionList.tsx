@@ -233,7 +233,7 @@ const LimitedEditionContainer = dynamic<any>(
   }
 );
 
-const LimitedEdition = () => {
+const LimitedEdition = ({ price }: { price: number }) => {
   return (
     <div>
       <LimitedEditionContainer as="a" href="#">
@@ -241,7 +241,7 @@ const LimitedEdition = () => {
           <LimitedEditionName>Limited Edition</LimitedEditionName>
           <EditionTagContainer>
             <LimitedEditionTag>Auction</LimitedEditionTag>
-            <LimitedEditionTag>33.52ETH Each</LimitedEditionTag>
+            <LimitedEditionTag>{price}ENS Each</LimitedEditionTag>
           </EditionTagContainer>
         </EditionDetails>
         <EditionAction>
@@ -268,7 +268,38 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-export const EditionList = () => {
+export interface Auction {
+  auctionId: number;
+  order: Order;
+  exactOrder: string;
+  symbolAuctioningToken: string;
+  symbolBiddingToken: string;
+  addressAuctioningToken: string;
+  addressBiddingToken: string;
+  decimalsAuctioningToken: string;
+  decimalsBiddingToken: string;
+  endTimeTimestamp: number;
+  orderCancellationEndDate: number;
+  startingTimestamp: number;
+  minimumBiddingAmountPerOrder: string;
+  minFundingThreshold: string;
+  allowListManager: string;
+  allowListSigner: string;
+  currentClearingPrice: number;
+  currentBiddingAmount: string;
+  isAtomicClosureAllowed: boolean;
+  isPrivateAuction: boolean;
+  chainId: string;
+  interestScore: number;
+  usdAmountTraded: number;
+}
+
+export interface Order {
+  price: number;
+  volume: number;
+}
+
+export const EditionList = ({ auction }: { auction: Auction }) => {
   return (
     <Wrapper>
       <EditionTemplate
@@ -283,7 +314,7 @@ export const EditionList = () => {
         linkTitle="Buy"
         link="#"
       />
-      <LimitedEdition />
+      <LimitedEdition price={auction.order.price} />
     </Wrapper>
   );
 };

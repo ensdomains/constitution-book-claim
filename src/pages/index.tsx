@@ -1,5 +1,9 @@
 import { tokens, Typography } from "@ensdomains/thorin";
-import type { NextPage } from "next";
+import type {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import Head from "next/head";
 import styled from "styled-components";
 import Logo from "../assets/Logo.svg";
@@ -105,7 +109,9 @@ const InnerContentFlex = styled.div`
   `}
 `;
 
-const Home: NextPage = () => {
+const Home: NextPage = ({
+  auction,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   return (
     <BasicWrapper>
       <Head>
@@ -132,12 +138,25 @@ const Home: NextPage = () => {
           </Heading>
           <InnerContentFlex>
             <ImageCarousell />
-            <EditionList />
+            <EditionList auction={auction} />
           </InnerContentFlex>
         </Content>
       </BasicContainer>
     </BasicWrapper>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const auctionRes = await fetch(
+    "https://ido-api-mainnet.gnosis.io/api/v1/get_auction_with_details/219"
+  );
+  const auction = await auctionRes.json();
+
+  return {
+    props: {
+      auction,
+    },
+  };
 };
 
 export default Home;
