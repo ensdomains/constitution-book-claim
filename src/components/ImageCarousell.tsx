@@ -1,8 +1,9 @@
-import { tokens } from "@ensdomains/thorin";
+import { Select, tokens } from "@ensdomains/thorin";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import one from "../../public/img/one.png";
+import three from "../../public/img/three.png";
 import two from "../../public/img/two.png";
 
 const Container = styled.div`
@@ -15,6 +16,11 @@ const Container = styled.div`
   background-color: ${tokens.colors.base.white};
   box-shadow: ${({ theme }) => tokens.boxShadows[theme.mode]["0.25"]};
   padding: ${tokens.space["4"]};
+
+  & [role="listbox"] {
+    background-color: white;
+    z-index: 20;
+  }
 `;
 
 const Preview = styled.div`
@@ -74,32 +80,60 @@ const images = [
   {
     src: one,
     alt: "Constitution Book front cover",
+    type: "unlimited",
   },
   {
     src: two,
     alt: "Limited Edition Constitution Book",
+    type: "limited",
+  },
+  {
+    src: three,
+    alt: "Digital Edition Cover",
+    type: "digital",
   },
 ];
 
 export const ImageCarousell = () => {
-  const [selected, setSelected] = useState(0);
+  const [edition, setEdition] = useState("limited");
+  const [selected, setSelected] = useState(images[1]);
+
+  useEffect(() => {
+    setSelected(images.filter((x) => x.type === edition)[0]);
+  }, [edition]);
 
   return (
     <Container>
+      <Select
+        label="Edition"
+        hideLabel
+        selected={useMemo(
+          () => ({ value: "limited", label: "Limited Edition" }),
+          []
+        )}
+        options={[
+          { value: "digital", label: "Digital Edition" },
+          { value: "unlimited", label: "Unlimited Edition" },
+          { value: "limited", label: "Limited Edition" },
+        ]}
+        onChange={(e) => e && setEdition(e.value)}
+      />
       <Preview>
-        <Image alt={images[selected].alt} src={images[selected].src} />
+        <Image alt={selected.alt} src={selected.src} />
       </Preview>
       <ImageThumbnailContainer>
-        {images.map((image, index) => (
-          <ImageThumnail
-            $selected={selected === index}
-            as="button"
-            key={index}
-            onClick={() => setSelected(index)}
-          >
-            <Image quality={25} alt={image.alt} src={image.src} />
-          </ImageThumnail>
-        ))}
+        {images
+          .filter((x) => x.type === edition)
+          .map((image, index) => (
+            <ImageThumnail
+              $selected={selected.src === image.src}
+              as="button"
+              key={index}
+              onClick={() => setSelected(image)}
+            >
+              <Image quality={25} alt={image.alt} src={image.src} />
+            </ImageThumnail>
+          ))}
       </ImageThumbnailContainer>
     </Container>
   );
