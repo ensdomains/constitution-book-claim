@@ -1,5 +1,4 @@
 import { ArrowRightSVG, tokens } from "@ensdomains/thorin";
-import { useEffect, useState } from "react";
 import { renderToString } from "react-dom/server";
 import styled, { css, keyframes } from "styled-components";
 import {
@@ -227,41 +226,77 @@ const LimitedEditionContainer = styled(Edition)`
   }
 `;
 
+// const LimitedEdition = ({
+//   price,
+//   endTime,
+// }: {
+//   price: number;
+//   endTime: number;
+// }) => {
+//   const [end, setEnd] = useState("00:00:00");
+
+//   useEffect(() => {
+//     const interval = setInterval(() => {
+//       const diff = endTime * 1000 - Date.now();
+//       const days = Math.floor(diff / 86400000);
+//       const hours = Math.floor((diff / 3600000) % 24)
+//         .toString()
+//         .padStart(2, "0");
+//       const minutes = Math.floor((diff / 60000) % 60)
+//         .toString()
+//         .padStart(2, "0");
+//       const seconds = Math.floor((diff / 1000) % 60)
+//         .toString()
+//         .padStart(2, "0");
+//       if (diff < 0) {
+//         clearInterval(interval);
+//         setEnd("");
+//       }
+//       if (days === 0) {
+//         setEnd(`${hours}:${minutes}:${seconds}`);
+//       } else {
+//         setEnd(`${days} ${days > 1 ? "days" : "day"}`);
+//       }
+//     }, 1000);
+//     return () => clearInterval(interval);
+//   }, [endTime]);
+
+//   return (
+//     <div>
+//       <LimitedEditionContainer as="a" href="#">
+//         <EditionDetails>
+//           <LimitedEditionName>Limited Edition</LimitedEditionName>
+//           <EditionTagContainer>
+//             <LimitedEditionTag>Auction</LimitedEditionTag>
+//             <LimitedEditionTag>{price.toFixed(2)} ENS</LimitedEditionTag>
+//           </EditionTagContainer>
+//         </EditionDetails>
+//         <EditionAction>
+//           <LimitedEditionAuctionDetails>
+//             <LimitedEditionLinkTitle>Bid</LimitedEditionLinkTitle>
+//             <LimitedEditionBidTime>
+//               {end === "" ? "Auction ended" : `Ends in ${end}`}
+//             </LimitedEditionBidTime>
+//           </LimitedEditionAuctionDetails>
+//           <LimitedEditionArrow />
+//         </EditionAction>
+//       </LimitedEditionContainer>
+//       <LimitedEditionDescription>
+//         25 numbered copies from a limited edition of 50 are available. Bid in a
+//         batch auction for a &apos;book token&apos; that can be redeemed for a
+//         physical copy of the book.
+//       </LimitedEditionDescription>
+//     </div>
+//   );
+// };
+
 const LimitedEdition = ({
-  price,
-  endTime,
+  price: _price,
+  endTime: _endTime,
 }: {
   price: number;
   endTime: number;
 }) => {
-  const [end, setEnd] = useState("00:00:00");
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const diff = endTime * 1000 - Date.now();
-      const days = Math.floor(diff / 86400000);
-      const hours = Math.floor((diff / 3600000) % 24)
-        .toString()
-        .padStart(2, "0");
-      const minutes = Math.floor((diff / 60000) % 60)
-        .toString()
-        .padStart(2, "0");
-      const seconds = Math.floor((diff / 1000) % 60)
-        .toString()
-        .padStart(2, "0");
-      if (diff < 0) {
-        clearInterval(interval);
-        setEnd("");
-      }
-      if (days === 0) {
-        setEnd(`${hours}:${minutes}:${seconds}`);
-      } else {
-        setEnd(`${days} ${days > 1 ? "days" : "day"}`);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [endTime]);
-
   return (
     <div>
       <LimitedEditionContainer as="a" href="#">
@@ -269,15 +304,13 @@ const LimitedEdition = ({
           <LimitedEditionName>Limited Edition</LimitedEditionName>
           <EditionTagContainer>
             <LimitedEditionTag>Auction</LimitedEditionTag>
-            <LimitedEditionTag>{price.toFixed(2)} ENS</LimitedEditionTag>
+            <LimitedEditionTag>0.00 ENS</LimitedEditionTag>
           </EditionTagContainer>
         </EditionDetails>
         <EditionAction>
           <LimitedEditionAuctionDetails>
             <LimitedEditionLinkTitle>Bid</LimitedEditionLinkTitle>
-            <LimitedEditionBidTime>
-              {end === "" ? "Auction ended" : `Ends in ${end}`}
-            </LimitedEditionBidTime>
+            <LimitedEditionBidTime>Auction not started</LimitedEditionBidTime>
           </LimitedEditionAuctionDetails>
           <LimitedEditionArrow />
         </EditionAction>
@@ -343,7 +376,7 @@ export const EditionList = ({ auction }: { auction: Auction }) => {
         tags={["$114.39"]}
         name="Unlimited Edition"
         linkTitle="Buy"
-        link="#"
+        link="https://www.blurb.com/b/11110201"
       />
       <LimitedEdition
         price={auction.order.price}
