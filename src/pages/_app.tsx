@@ -44,19 +44,21 @@ a {
   font-feature-settings: "ss01" on, "ss03" on, "ss04" on;
   -moz-font-feature-settings: "ss01" on, "ss03" on, "ss04" on;
 }
+
+mapbox-search-listbox > div > div[aria-hidden="true"] {
+  max-width: 0;
+}
 `;
 
 const infuraId = process.env.INFURA_ID;
 
 const provider = ({ chainId }: { chainId?: number }) =>
-  new providers.InfuraProvider(chainId, infuraId);
+  new providers.JsonRpcProvider(
+    "https://rpc.tenderly.co/fork/937040bd-7ee0-47b8-bcd9-ce1db5641f72",
+    chainId
+  );
 
-const chains: Chain[] = [
-  { ...chain.mainnet, name: "Ethereum" },
-  { ...chain.polygonMainnet, name: "Polygon" },
-  { ...chain.optimism, name: "Optimism" },
-  { ...chain.arbitrumOne, name: "Arbitrum" },
-];
+const chains: Chain[] = [{ ...chain.mainnet, name: "Ethereum" }];
 
 const wallets = getDefaultWallets({
   chains,
