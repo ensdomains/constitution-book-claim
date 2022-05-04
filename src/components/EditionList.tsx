@@ -264,7 +264,10 @@ const LimitedEdition = ({
 
   return (
     <div>
-      <LimitedEditionContainer as="a" href="#">
+      <LimitedEditionContainer
+        as="a"
+        href="https://gnosis-auction.eth.link/#/auction?auctionId=231&chainId=1#topAnchor"
+      >
         <EditionDetails>
           <LimitedEditionName>Limited Edition</LimitedEditionName>
           <EditionTagContainer>
