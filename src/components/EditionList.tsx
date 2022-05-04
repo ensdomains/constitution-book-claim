@@ -264,7 +264,10 @@ const LimitedEdition = ({
 
   return (
     <div>
-      <LimitedEditionContainer as="a" href="#">
+      <LimitedEditionContainer
+        as="a"
+        href="https://gnosis-auction.eth.link/#/auction?auctionId=231&chainId=1#topAnchor"
+      >
         <EditionDetails>
           <LimitedEditionName>Limited Edition</LimitedEditionName>
           <EditionTagContainer>
@@ -343,7 +346,7 @@ export const EditionList = ({ auction }: { auction: Auction }) => {
         tags={["$114.39"]}
         name="Unlimited Edition"
         linkTitle="Buy"
-        link="#"
+        link="https://www.blurb.com/b/11110201"
       />
       <LimitedEdition
         price={auction.order.price}

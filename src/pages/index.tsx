@@ -112,7 +112,7 @@ const Home: NextPage = ({
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const auctionRes = await fetch(
-    "https://ido-api-mainnet.gnosis.io/api/v1/get_auction_with_details/219"
+    "https://ido-api-mainnet.gnosis.io/api/v1/get_auction_with_details/231"
   );
   const auction = await auctionRes.json();
 

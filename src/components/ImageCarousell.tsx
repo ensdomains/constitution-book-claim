@@ -1,10 +1,10 @@
-import { Select, tokens } from "@ensdomains/thorin";
+import { Modal, Select, tokens } from "@ensdomains/thorin";
+import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import one from "../../public/img/one.png";
-import three from "../../public/img/three.png";
-import two from "../../public/img/two.png";
+import { DE, LE, UE } from "../assets/imgImports";
+import mq from "../utils/mediaQuery";
 
 const Container = styled.div`
   display: flex;
@@ -37,10 +37,15 @@ const ImageThumbnailContainer = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   gap: ${tokens.space["2"]};
   flex-gap: ${tokens.space["2"]};
   width: 100%;
+  flex-wrap: wrap;
+
+  ${mq.medium.min`
+    justify-content: flex-start;
+  `}
 `;
 
 const ImageThumnail = styled.div<{ $selected: boolean }>`
@@ -76,27 +81,24 @@ const ImageThumnail = styled.div<{ $selected: boolean }>`
   padding: ${tokens.space["1"]};
 `;
 
+const mapFn =
+  (type: "digital" | "unlimited" | "limited") =>
+  (item: [StaticImageData, string]) => ({
+    src: item[0],
+    alt: item[1],
+    type,
+  });
+
 const images = [
-  {
-    src: one,
-    alt: "Constitution Book front cover",
-    type: "unlimited",
-  },
-  {
-    src: two,
-    alt: "Limited Edition Constitution Book",
-    type: "limited",
-  },
-  {
-    src: three,
-    alt: "Digital Edition Cover",
-    type: "digital",
-  },
+  ...DE.map(mapFn("digital")),
+  ...LE.map(mapFn("limited")),
+  ...UE.map(mapFn("unlimited")),
 ];
 
 export const ImageCarousell = () => {
   const [edition, setEdition] = useState("limited");
   const [selected, setSelected] = useState(images[1]);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     setSelected(images.filter((x) => x.type === edition)[0]);
@@ -118,9 +120,12 @@ export const ImageCarousell = () => {
         ]}
         onChange={(e) => e && setEdition(e.value)}
       />
-      <Preview>
+      <Preview onClick={() => setModalOpen(true)}>
         <Image alt={selected.alt} src={selected.src} />
       </Preview>
+      <Modal open={modalOpen} onDismiss={() => setModalOpen(false)}>
+        <Image width={768} height={768} alt={selected.alt} src={selected.src} />
+      </Modal>
       <ImageThumbnailContainer>
         {images
           .filter((x) => x.type === edition)

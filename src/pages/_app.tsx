@@ -48,6 +48,19 @@ a {
 mapbox-search-listbox > div > div[aria-hidden="true"] {
   max-width: 0;
 }
+
+.modal {
+  position: relative;
+  z-index: 20;
+}
+
+.modal > div > div {
+  padding: 0 24px;
+}
+
+.modal > div svg {
+  min-width: 1.5rem;
+}
 `;
 
 const infuraId = process.env.INFURA_ID;
