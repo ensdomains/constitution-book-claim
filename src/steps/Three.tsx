@@ -1,19 +1,17 @@
 import {
   Button,
   Input,
-  Select,
   Textarea,
   tokens,
   Typography,
 } from "@ensdomains/thorin";
 import { BigNumber } from "ethers";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useContract, useProvider } from "wagmi";
 import abi from "../assets/abi.json";
 import { Box } from "../components/Box";
 import { ButtonBox } from "../components/ButtonBox";
-import { SelectWrapper } from "../components/SelectWrapper";
 import { Form } from "../pages/claim";
 
 const StepThreeBox = styled(Box)`
@@ -39,6 +37,54 @@ const TextareaWrapper = styled.div`
   }
 `;
 
+const CopyNumWrapper = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(${tokens.space["11"]}, 1fr));
+  gap: ${tokens.space["2"]};
+`;
+
+const CopyNumButton = styled.button<{ $pressed?: boolean }>`
+  background-color: ${({ theme }) =>
+    tokens.colors[theme.mode].foregroundTertiary};
+  border-radius: ${tokens.radii["extraLarge"]};
+  border: none;
+  outline: none;
+  cursor: pointer;
+  height: ${tokens.space["11"]};
+  width: ${tokens.space["11"]};
+  font-weight: ${tokens.fontWeights["bold"]};
+  color: #333333;
+  transition: all 0.15s ease-in-out;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.07);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  ${({ $pressed }) =>
+    $pressed &&
+    `
+    background-color: rgba(0,0,0,0.1);
+    transform: translateY(-2px) !important;
+    `}
+`;
+
+const CopyLabelContainer = styled.div`
+  padding: 0 ${tokens.space["4"]};
+`;
+
+const CopyNumLabel = styled(Typography)`
+  font-size: ${tokens.fontSizes["root"]};
+  color: rgba(0, 0, 0, 0.4);
+`;
+
 export const StepThree = ({
   formData,
   orderID,
@@ -58,15 +104,9 @@ export const StepThree = ({
   });
 
   const [availableCopies, setAvailableCopies] = useState(
-    Array.from({ length: 50 }, () => true)
+    Array.from({ length: 50 }, () => false)
   );
-  const [selectedCopy, setSelectedCopy] = useState<{
-    value: string;
-    label?: string;
-  }>({
-    value: "Loading Available Copies",
-    label: "Loading Available Copies",
-  });
+  const [selectedCopy, setSelectedCopy] = useState<number | null>(null);
 
   useEffect(() => {
     const run = async () => {
@@ -76,12 +116,6 @@ export const StepThree = ({
         const ret = copies.map((_, i) =>
           binary[49 - i] === "1" ? false : true
         );
-        const firstAvailable = ret.findIndex((x) => x);
-        setSelectedCopy({
-          value: firstAvailable.toString(),
-          label: (firstAvailable + 1).toString(),
-        });
-        setParentSelectedCopy(firstAvailable.toString());
         return ret;
       });
     };
@@ -121,19 +155,22 @@ ${formData.countryName}`}
         </TextareaWrapper>
         <Input label="Email" value={formData.email} readOnly />
         <Input label="Order ID" value={orderID || "None"} readOnly />
-        <SelectWrapper>
-          <Select
-            label="Copy Number"
-            description="The copy number you would like to redeem"
-            selected={useMemo(() => selectedCopy, [selectedCopy])}
-            options={availableCopies.map((available, i) => ({
-              value: i.toString(),
-              label: (i + 1).toString(),
-              disabled: !available,
-            }))}
-            onChange={(e) => e && setSelectedCopy(e)}
-          />
-        </SelectWrapper>
+        <CopyLabelContainer>
+          <CopyNumLabel variant="labelHeading">Copy Number</CopyNumLabel>
+          <p>The copy number you would like to redeem</p>
+        </CopyLabelContainer>
+        <CopyNumWrapper>
+          {availableCopies.map((available, i) => (
+            <CopyNumButton
+              $pressed={selectedCopy === i}
+              onClick={() => setSelectedCopy(i)}
+              disabled={!available}
+              key={i}
+            >
+              {i + 1}
+            </CopyNumButton>
+          ))}
+        </CopyNumWrapper>
       </StepThreeBox>
       <ButtonBox>
         <Button variant="secondary" onClick={() => setStep(1)}>
@@ -141,9 +178,9 @@ ${formData.countryName}`}
         </Button>
         <Button
           variant="primary"
-          disabled={selectedCopy.value === "Loading Available Copies"}
+          disabled={typeof selectedCopy !== "number"}
           onClick={() => {
-            setParentSelectedCopy(selectedCopy.value);
+            selectedCopy && setParentSelectedCopy(selectedCopy.toString());
             setStep(3);
           }}
         >

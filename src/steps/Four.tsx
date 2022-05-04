@@ -195,7 +195,11 @@ export const StepFour = ({
         <TransactionState />
         <FormGroup>
           <Input label="Order ID" value={orderID || "None"} readOnly />
-          <Input label="Copy Number" value={selectedCopy || "None"} readOnly />
+          <Input
+            label="Copy Number"
+            value={parseInt(selectedCopy!) + 1 || "None"}
+            readOnly
+          />
         </FormGroup>
       </StepFourBox>
       <ButtonBox>
