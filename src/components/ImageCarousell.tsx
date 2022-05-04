@@ -1,4 +1,4 @@
-import { Select, tokens } from "@ensdomains/thorin";
+import { Modal, Select, tokens } from "@ensdomains/thorin";
 import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
@@ -98,6 +98,7 @@ const images = [
 export const ImageCarousell = () => {
   const [edition, setEdition] = useState("limited");
   const [selected, setSelected] = useState(images[1]);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     setSelected(images.filter((x) => x.type === edition)[0]);
@@ -119,9 +120,12 @@ export const ImageCarousell = () => {
         ]}
         onChange={(e) => e && setEdition(e.value)}
       />
-      <Preview>
+      <Preview onClick={() => setModalOpen(true)}>
         <Image alt={selected.alt} src={selected.src} />
       </Preview>
+      <Modal open={modalOpen} onDismiss={() => setModalOpen(false)}>
+        <Image width={768} height={768} alt={selected.alt} src={selected.src} />
+      </Modal>
       <ImageThumbnailContainer>
         {images
           .filter((x) => x.type === edition)

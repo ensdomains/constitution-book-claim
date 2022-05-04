@@ -44,6 +44,19 @@ a {
   font-feature-settings: "ss01" on, "ss03" on, "ss04" on;
   -moz-font-feature-settings: "ss01" on, "ss03" on, "ss04" on;
 }
+
+.modal {
+  position: relative;
+  z-index: 20;
+}
+
+.modal > div > div {
+  padding: 0 24px;
+}
+
+.modal > div svg {
+  min-width: 1.5rem;
+}
 `;
 
 const infuraId = process.env.INFURA_ID;
