@@ -1,7 +1,8 @@
 import { Profile, tokens } from "@ensdomains/thorin";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import type { NextPage } from "next";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useAccount } from "wagmi";
 import { PurpleButton } from "../components/PurpleButton";
@@ -134,8 +135,9 @@ const steps = [
 ];
 
 const Home: NextPage = () => {
+  const router = useRouter();
   const [_, disconnect] = useAccount();
-  const [step, setStep] = useState(0);
+  const [step, _setStep] = useState(0);
   const [orderID, setOrderID] = useState<string | null>(null);
   const [selectedCopy, setSelectedCopy] = useState<string | null>(null);
   const [formData, setFormData] = useState({
@@ -151,6 +153,19 @@ const Home: NextPage = () => {
   });
 
   const Component = steps[step].component;
+
+  const setStep = (step: number) => {
+    router.push(`/claim?step=${step + 1}`, undefined, { shallow: true });
+  };
+
+  useEffect(() => {
+    if (router.query.step && parseInt(router.query.step as string) >= 1) {
+      _setStep(parseInt(router.query.step as string) - 1);
+    } else {
+      setStep(0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.step]);
 
   return (
     <Basic
