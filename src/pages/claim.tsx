@@ -50,9 +50,16 @@ const Step = styled(Title)`
   font-weight: ${tokens.fontWeights["bold"]};
 `;
 
-const FadedTitle = styled(Title)`
+const FadedTitle = styled.h1`
+  text-align: left;
+  font-size: ${tokens.fontSizes.headingThree};
+  line-height: ${tokens.lineHeights["1.25"]};
   font-weight: ${tokens.fontWeights["bold"]};
-  opacity: 0.5;
+  color: ${({ theme }) => tokens.colors[theme.mode].textTertiary};
+
+  ${mq.medium.min`
+    font-size: ${tokens.fontSizes.headingTwo};
+  `}
 `;
 
 const InnerContentFlex = styled.div`

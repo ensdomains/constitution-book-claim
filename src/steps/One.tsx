@@ -54,7 +54,7 @@ export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
         <Main />
       </Box>
       <ButtonBox>
-        <Button variant="secondary" onClick={() => router.back()}>
+        <Button variant="secondary" onClick={() => router.push("/")}>
           Back
         </Button>
         <PurpleButton
