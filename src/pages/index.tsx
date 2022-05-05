@@ -19,7 +19,7 @@ const Heading = styled.div`
   flex-gap: ${tokens.space["4"]};
   max-width: ${tokens.space["168"]};
 
-  ${mq.medium.min`
+  ${mq.large.min`
     align-items: center;
   `}
 `;
@@ -35,7 +35,7 @@ const Title = styled.h1`
   text-align: left;
   line-height: ${tokens.lineHeights["1.25"]};
 
-  ${mq.medium.min`
+  ${mq.large.min`
     text-align: center;
   `}
 `;
@@ -48,7 +48,7 @@ const Subtitle = styled.h3`
   text-align: left;
   margin-bottom: ${tokens.space["4"]};
 
-  ${mq.medium.min`
+  ${mq.large.min`
     text-align: center;
   `}
 `;
@@ -61,7 +61,7 @@ const Flavour = styled(Typography)`
   opacity: 0.75;
   text-align: left;
 
-  ${mq.medium.min`
+  ${mq.large.min`
     text-align: center;
   `}
 `;

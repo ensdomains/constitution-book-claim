@@ -1,7 +1,11 @@
-import { tokens } from "@ensdomains/thorin";
+import { Profile, tokens } from "@ensdomains/thorin";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import type { NextPage } from "next";
 import { useState } from "react";
 import styled from "styled-components";
+import { useAccount } from "wagmi";
+import { PurpleButton } from "../components/PurpleButton";
+import { StyledIconEthTransparentInverted } from "../components/StyledIconEthTransparentInverted";
 import { Basic } from "../layouts/Basic";
 import { StepFour } from "../steps/Four";
 import { StepOne } from "../steps/One";
@@ -14,12 +18,12 @@ const Heading = styled.div`
   align-items: flex-start;
   justify-content: center;
   flex-direction: column;
-  gap: ${tokens.space["4"]};
-  flex-gap: ${tokens.space["4"]};
+  gap: ${tokens.space["2"]};
+  flex-gap: ${tokens.space["2"]};
   width: 95%;
   max-width: ${tokens.space["256"]};
 
-  ${mq.medium.min`
+  ${mq.large.min`
     width: 100%;
     align-items: center;
   `}
@@ -41,7 +45,12 @@ const Title = styled.h1`
   `}
 `;
 
+const Step = styled(Title)`
+  font-weight: ${tokens.fontWeights["bold"]};
+`;
+
 const FadedTitle = styled(Title)`
+  font-weight: ${tokens.fontWeights["bold"]};
   opacity: 0.5;
 `;
 
@@ -70,6 +79,27 @@ const HeadingState = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+`;
+
+const Content = styled.div`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: ${tokens.space["4"]};
+  flex-gap: ${tokens.space["4"]};
+
+  ${mq.medium.min`
+    gap: ${tokens.space["8"]};
+    flex-gap: ${tokens.space["8"]};
+  `}
+`;
+
+const ProfileWrapper = styled.div`
+  & [aria-label="profile-avatar"] {
+    background: linear-gradient(323.31deg, #de82ff -15.56%, #7f6aff 108.43%);
+  }
 `;
 
 export type Form = {
@@ -104,6 +134,7 @@ const steps = [
 ];
 
 const Home: NextPage = () => {
+  const [_, disconnect] = useAccount();
   const [step, setStep] = useState(0);
   const [orderID, setOrderID] = useState<string | null>(null);
   const [selectedCopy, setSelectedCopy] = useState<string | null>(null);
@@ -122,29 +153,78 @@ const Home: NextPage = () => {
   const Component = steps[step].component;
 
   return (
-    <Basic>
-      <Heading>
-        <HeadingState>
-          <FadedTitle>Claim your book</FadedTitle>
-          <FadedTitle>
-            {step + 1}/{steps.length}
+    <Basic
+      withWrap={false}
+      headerChildren={
+        <ConnectButton.Custom>
+          {({
+            account,
+            openConnectModal,
+            openAccountModal,
+            accountModalOpen,
+          }) =>
+            !account ? (
+              <PurpleButton
+                gradient={true}
+                onClick={() => openConnectModal()}
+                prefix={
+                  <StyledIconEthTransparentInverted
+                    size={{ xs: "4", sm: "6" }}
+                  />
+                }
+                variant="action"
+                size="medium"
+              >
+                Connect
+              </PurpleButton>
+            ) : (
+              <ProfileWrapper>
+                <Profile
+                  address={account.address}
+                  avatar={account.ensAvatar}
+                  ensName={account.ensName}
+                  dropdownItems={[
+                    {
+                      label: "Disconnect",
+                      color: "red",
+                      onClick: () => disconnect(),
+                    },
+                  ]}
+                />
+              </ProfileWrapper>
+            )
+          }
+        </ConnectButton.Custom>
+      }
+    >
+      <Content>
+        <Heading>
+          <FadedTitle style={{ alignSelf: "flex-start" }}>
+            Claim your book
           </FadedTitle>
-        </HeadingState>
-        <Title style={{ alignSelf: "flex-start" }}>{steps[step].title}</Title>
-      </Heading>
-      <InnerContentFlex>
-        <Component
-          {...{
-            formData,
-            setFormData,
-            setOrderID,
-            orderID,
-            setStep,
-            setSelectedCopy,
-            selectedCopy,
-          }}
-        />
-      </InnerContentFlex>
+          <HeadingState>
+            <Title style={{ alignSelf: "flex-start" }}>
+              {steps[step].title}
+            </Title>
+            <Step>
+              {step + 1}/{steps.length}
+            </Step>
+          </HeadingState>
+        </Heading>
+        <InnerContentFlex>
+          <Component
+            {...{
+              formData,
+              setFormData,
+              setOrderID,
+              orderID,
+              setStep,
+              setSelectedCopy,
+              selectedCopy,
+            }}
+          />
+        </InnerContentFlex>
+      </Content>
     </Basic>
   );
 };

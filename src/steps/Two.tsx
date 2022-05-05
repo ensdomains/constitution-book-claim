@@ -1,6 +1,5 @@
 import {
   Button,
-  Input,
   Select,
   tokens,
   Typography,
@@ -13,6 +12,8 @@ import styled from "styled-components";
 import countries from "../assets/countries.json";
 import { Box } from "../components/Box";
 import { ButtonBox } from "../components/ButtonBox";
+import { Input } from "../components/InputStyles";
+import { PurpleButton } from "../components/PurpleButton";
 import { SelectWrapper } from "../components/SelectWrapper";
 import { Form } from "../pages/claim";
 import mq from "../utils/mediaQuery";
@@ -35,6 +36,10 @@ const Form = styled.form`
   & input:-webkit-autofill:focus {
     transition: background-color 600000s 0s, color 600000s 0s;
   }
+
+  & [aria-live="polite"] {
+    display: none;
+  }
 `;
 
 const FormGroup = styled.div`
@@ -44,6 +49,29 @@ const FormGroup = styled.div`
   flex-gap: ${tokens.space["4"]};
   ${mq.medium.min`
     flex-direction: row;
+  `}
+`;
+
+const LabelText = styled(Typography)<{ $error?: string }>`
+  font-size: ${tokens.fontSizes["root"]};
+  color: rgba(0, 0, 0, 0.4);
+  height: ${tokens.fontSizes["root"]};
+
+  ${({ $error, theme }) =>
+    $error
+      ? `
+    &::after {
+      margin-left: ${tokens.space["2"]};
+      content: "*${$error}";
+      color: ${tokens.colors[theme.mode].red};
+    }
+  `
+      : `
+    &::after {
+      margin-left: ${tokens.space["2"]};
+      content: "*";
+      color: ${tokens.colors[theme.mode].red};
+    }
   `}
 `;
 
@@ -67,6 +95,7 @@ export const StepTwo = ({
     country: undefined,
     postalCode: undefined,
   });
+  const [loadingOrderID, setLoadingOrderID] = useState(false);
 
   const handleChange =
     (name: keyof typeof formData) =>
@@ -79,14 +108,16 @@ export const StepTwo = ({
     setError({ ...error, [name]: formData[name] ? undefined : "Required" });
 
   const handleSubmit = async () => {
-    const hasError = Object.keys(error).some((key) => {
+    const hasError = Object.keys(error).map((key) => {
       const isEmpty = formData[key as keyof Form] === "";
-      isEmpty && setError({ ...error, [key]: "Required" });
+      console.log(key, isEmpty);
+      isEmpty && setError((curr) => ({ ...curr, [key]: "Required" }));
       return isEmpty;
     });
 
-    if (hasError) return;
+    if (hasError.some((x) => x)) return;
 
+    setLoadingOrderID(true);
     const res = await fetch(
       "https://hook.us1.make.com/t6nj8ocoup1mcivetel452rfgg8lgg0m",
       {
@@ -101,6 +132,7 @@ export const StepTwo = ({
 
     setOrderID(orderID);
     setStep(2);
+    setLoadingOrderID(false);
   };
 
   return (
@@ -116,13 +148,13 @@ export const StepTwo = ({
           </Typography>
           <Typography>
             These will be used to send you the book, and to contact you if any
-            issues arrise.
+            issues arise.
           </Typography>
         </div>
         <Form>
           <FormGroup>
             <Input
-              label="Name"
+              label={<LabelText $error={error.name}>Name</LabelText>}
               value={formData.name}
               onChange={handleChange("name")}
               type="text"
@@ -132,7 +164,7 @@ export const StepTwo = ({
               required
             />
             <Input
-              label="Email"
+              label={<LabelText $error={error.email}>Email</LabelText>}
               onChange={handleChange("email")}
               value={formData.email}
               error={error.email}
@@ -156,7 +188,9 @@ export const StepTwo = ({
                 accessToken="pk.eyJ1IjoidGF5dGVtcyIsImEiOiJjbDJwZWw2YnYyajNoM2lwOTF2b2U4OXhwIn0.ZKOCHRYd0hn2SKpiu1nTHg"
               >
                 <Input
-                  label="Address"
+                  label={
+                    <LabelText $error={error.addressLine1}>Address</LabelText>
+                  }
                   onChange={handleChange("addressLine1")}
                   value={formData.addressLine1}
                   type="text"
@@ -179,7 +213,7 @@ export const StepTwo = ({
           </FormGroup>
           <FormGroup>
             <Input
-              label="City"
+              label={<LabelText $error={error.city}>City</LabelText>}
               onChange={handleChange("city")}
               value={formData.city}
               placeholder="New City"
@@ -189,7 +223,7 @@ export const StepTwo = ({
               autoComplete="address-level2"
             />
             <Input
-              label="State"
+              label={<LabelText $error={error.state}>State</LabelText>}
               onChange={handleChange("state")}
               value={formData.state}
               placeholder="Oklahoma"
@@ -218,7 +252,7 @@ export const StepTwo = ({
           <FormGroup>
             <SelectWrapper style={{ width: "100%" }}>
               <Select
-                label="Country"
+                label={<LabelText $error={error.country}>Country</LabelText>}
                 selected={useMemo(
                   () => ({
                     value: formData.country,
@@ -241,7 +275,9 @@ export const StepTwo = ({
               />
             </SelectWrapper>
             <Input
-              label="Postcode/Zip"
+              label={
+                <LabelText $error={error.postalCode}>Postcode/Zip</LabelText>
+              }
               onChange={handleChange("postalCode")}
               value={formData.postalCode}
               placeholder="90210"
@@ -257,9 +293,13 @@ export const StepTwo = ({
         <Button variant="secondary" onClick={() => setStep(0)}>
           Back
         </Button>
-        <Button variant="primary" onClick={() => handleSubmit()}>
+        <PurpleButton
+          variant="primary"
+          disabled={loadingOrderID}
+          onClick={() => handleSubmit()}
+        >
           Next
-        </Button>
+        </PurpleButton>
       </ButtonBox>
     </>
   );

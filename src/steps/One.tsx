@@ -1,31 +1,13 @@
-import {
-  Button,
-  EthTransparentInvertedSVG,
-  tokens,
-  Typography,
-} from "@ensdomains/thorin";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { Button, tokens, Typography } from "@ensdomains/thorin";
 import { ethers } from "ethers";
-import styled from "styled-components";
+import { useRouter } from "next/router";
 import { useAccount, useBalance } from "wagmi";
 import { Box } from "../components/Box";
 import { ButtonBox } from "../components/ButtonBox";
-import mq from "../utils/mediaQuery";
-
-const StyledIconEthTransparentInverted = styled(EthTransparentInvertedSVG)`
-  color: white;
-  display: block;
-  margin-right: calc(${tokens.space["2"]} * -1);
-  margin-left: calc(${tokens.space["2"]} * -1);
-  height: ${tokens.space["4"]};
-  width: ${tokens.space["4"]};
-  ${mq.small.min`
-    height: ${tokens.space["6"]};
-    width: ${tokens.space["6"]};
-  `}
-`;
+import { PurpleButton } from "../components/PurpleButton";
 
 export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
+  const router = useRouter();
   const [{ data: accountData, loading: accountLoading }] = useAccount();
   const [{ data: balanceData, loading: balanceLoading }] = useBalance({
     addressOrName: accountData?.address,
@@ -37,7 +19,9 @@ export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
   const Main = () => {
     if (!accountData?.address && !accountLoading) {
       return (
-        <Typography>Please connect your wallet before continuing</Typography>
+        <Typography variant="extraLarge">
+          Please connect your wallet before continuing
+        </Typography>
       );
     }
     if (accountLoading || balanceLoading) {
@@ -46,8 +30,8 @@ export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
     if (hasBalance) {
       return (
         <Typography variant="extraLarge">
-          You have {balanceData?.formatted} $📘, meaning you are eligible to
-          claim a book!
+          You have {balanceData?.formatted.replace(/(?<=\.[0-9][0-9]).*/g, "")}{" "}
+          📘, meaning you are eligible to claim a book!
         </Typography>
       );
     }
@@ -70,33 +54,22 @@ export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
         <Main />
       </Box>
       <ButtonBox>
-        <Button variant="secondary">Back</Button>
-        <ConnectButton.Custom>
-          {({ account, openConnectModal }) =>
-            !account ? (
-              <Button
-                onClick={() => openConnectModal()}
-                prefix={
-                  <StyledIconEthTransparentInverted
-                    size={{ xs: "4", sm: "6" }}
-                  />
-                }
-                variant="action"
-                size="medium"
-              >
-                Connect
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                disabled={!hasBalance}
-                onClick={() => setStep(1)}
-              >
-                Next
-              </Button>
-            )
+        <Button variant="secondary" onClick={() => router.back()}>
+          Back
+        </Button>
+        <PurpleButton
+          variant="primary"
+          disabled={
+            !hasBalance ||
+            !accountData ||
+            accountLoading ||
+            !balanceData ||
+            balanceLoading
           }
-        </ConnectButton.Custom>
+          onClick={() => setStep(1)}
+        >
+          Next
+        </PurpleButton>
       </ButtonBox>
     </>
   );

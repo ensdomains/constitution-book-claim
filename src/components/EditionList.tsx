@@ -1,11 +1,7 @@
 import { ArrowRightSVG, tokens } from "@ensdomains/thorin";
 import { useEffect, useState } from "react";
-import { renderToString } from "react-dom/server";
-import styled, { css, keyframes } from "styled-components";
-import {
-  LimitedEditionGradient,
-  TwinkleType,
-} from "../assets/LimitedEditionGradient";
+import styled from "styled-components";
+import { TwinkleKeyframes } from "./TwinkleKeyframes";
 
 const EditionName = styled.h4`
   font-size: ${tokens.fontSizes.extraLarge};
@@ -156,58 +152,6 @@ const LimitedEditionDescription = styled.p`
   line-height: ${tokens.lineHeights["1.375"]};
   margin-top: ${tokens.space["2"]};
   padding: 0 ${tokens.space["2"]};
-`;
-
-const generateTwinkle = (): TwinkleType => {
-  const gradient = [];
-  for (let i = 0; i < 17; i++) {
-    gradient.push(Math.random());
-  }
-  return gradient as TwinkleType;
-};
-
-const generateTwinkleFrame = () => css`
-  background: url("data:image/svg+xml;base64,${Buffer.from(
-    renderToString(LimitedEditionGradient(generateTwinkle()))
-  ).toString("base64")}");
-  background-size: cover;
-  background-position: bottom;
-`;
-
-const TwinkleKeyframes = keyframes`
-0% {
-${generateTwinkleFrame()}
-}
-10% {
-${generateTwinkleFrame()}
-}
-20% {
-${generateTwinkleFrame()}
-}
-30% {
-${generateTwinkleFrame()}
-}
-40% { 
-${generateTwinkleFrame()}
-}
-50% {
-${generateTwinkleFrame()}
-}
-60% {
-${generateTwinkleFrame()}
-}
-70% {
-${generateTwinkleFrame()}
-}
-80% {
-${generateTwinkleFrame()}
-}
-90% {
-${generateTwinkleFrame()}
-}
-100% {
-${generateTwinkleFrame()}
-}
 `;
 
 const LimitedEditionContainer = styled(Edition)`

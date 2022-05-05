@@ -1,4 +1,4 @@
-import { Button, Input, Spinner, tokens, Typography } from "@ensdomains/thorin";
+import { Button, Spinner, tokens, Typography } from "@ensdomains/thorin";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -7,6 +7,8 @@ import abi from "../assets/abi.json";
 import OutlinkSVG from "../assets/Outlink.svg";
 import { Box } from "../components/Box";
 import { ButtonBox } from "../components/ButtonBox";
+import { Input } from "../components/InputStyles";
+import { PurpleButton } from "../components/PurpleButton";
 import mq from "../utils/mediaQuery";
 
 const StepFourBox = styled(Box)`
@@ -216,17 +218,17 @@ export const StepFour = ({
           </Button>
         )}
         {transaction.data ? (
-          <Button variant="primary" onClick={() => router.push("/")}>
+          <PurpleButton variant="primary" onClick={() => router.push("/")}>
             Home
-          </Button>
+          </PurpleButton>
         ) : (
-          <Button
+          <PurpleButton
             variant="primary"
             disabled={!!contractWrite.data || contractWrite.loading}
             onClick={() => tryTransaction()}
           >
             Retry
-          </Button>
+          </PurpleButton>
         )}
       </ButtonBox>
     </>

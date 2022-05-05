@@ -1,10 +1,4 @@
-import {
-  Button,
-  Input,
-  Textarea,
-  tokens,
-  Typography,
-} from "@ensdomains/thorin";
+import { Button, Textarea, tokens, Typography } from "@ensdomains/thorin";
 import { BigNumber } from "ethers";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -12,6 +6,8 @@ import { useContract, useProvider } from "wagmi";
 import abi from "../assets/abi.json";
 import { Box } from "../components/Box";
 import { ButtonBox } from "../components/ButtonBox";
+import { Input } from "../components/InputStyles";
+import { SparkleButton } from "../components/PurpleButton";
 import { Form } from "../pages/claim";
 
 const StepThreeBox = styled(Box)`
@@ -68,11 +64,17 @@ const CopyNumButton = styled.button<{ $pressed?: boolean }>`
     box-shadow: none;
   }
 
-  ${({ $pressed }) =>
+  ${({ $pressed, theme }) =>
     $pressed &&
     `
-    background-color: rgba(0,0,0,0.1);
-    transform: translateY(-2px) !important;
+    background-color: ${tokens.colors[theme.mode].purple} !important;
+    color: white;
+    transform: translateY(-2px);
+
+    &:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
     `}
 `;
 
@@ -83,6 +85,12 @@ const CopyLabelContainer = styled.div`
 const CopyNumLabel = styled(Typography)`
   font-size: ${tokens.fontSizes["root"]};
   color: rgba(0, 0, 0, 0.4);
+  margin-bottom: ${tokens.space["1"]};
+`;
+
+const StepTitle = styled(Typography)`
+  line-height: ${tokens.lineHeights["normal"]};
+  margin: ${tokens.space["0.75"]} 0;
 `;
 
 export const StepThree = ({
@@ -131,9 +139,9 @@ export const StepThree = ({
             marginBottom: tokens.space["4"],
           }}
         >
-          <Typography variant="extraLarge" weight="bold">
+          <StepTitle variant="extraLarge" weight="bold">
             Please make sure your details are correct!
-          </Typography>
+          </StepTitle>
           <Typography>
             The on-chain transaction only includes your order ID and copy
             number, but your order ID is directly linked to these details. If
@@ -176,7 +184,7 @@ ${formData.countryName}`}
         <Button variant="secondary" onClick={() => setStep(1)}>
           Back
         </Button>
-        <Button
+        <SparkleButton
           variant="primary"
           disabled={typeof selectedCopy !== "number"}
           onClick={() => {
@@ -184,8 +192,8 @@ ${formData.countryName}`}
             setStep(3);
           }}
         >
-          Next
-        </Button>
+          Claim
+        </SparkleButton>
       </ButtonBox>
     </>
   );
