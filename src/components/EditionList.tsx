@@ -349,7 +349,7 @@ export const EditionList = ({ auction }: { auction: Auction }) => {
         link="https://www.blurb.com/b/11110201"
       />
       <LimitedEdition
-        price={auction.order.price}
+        price={auction.currentClearingPrice}
         endTime={auction.endTimeTimestamp}
       />
     </Wrapper>
