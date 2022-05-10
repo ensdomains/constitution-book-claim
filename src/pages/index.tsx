@@ -1,9 +1,6 @@
 import { tokens, Typography } from "@ensdomains/thorin";
-import type {
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-  NextPage,
-} from "next";
+import { BigNumber } from "ethers";
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import styled from "styled-components";
 import { EditionList } from "../components/EditionList";
 import { ImageCarousell } from "../components/ImageCarousell";
@@ -85,8 +82,9 @@ const InnerContentFlex = styled.div`
 `;
 
 const Home: NextPage = ({
-  auction,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  priceData,
+  remainingCopies,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <Basic>
       <Heading>
@@ -104,22 +102,68 @@ const Home: NextPage = ({
       </Heading>
       <InnerContentFlex>
         <ImageCarousell />
-        <EditionList auction={auction} />
+        <EditionList remaining={remainingCopies} price={priceData} />
       </InnerContentFlex>
     </Basic>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const auctionRes = await fetch(
-    "https://ido-api-mainnet.gnosis.io/api/v1/get_auction_with_details/231"
-  );
-  const auction = await auctionRes.json();
+export const getStaticProps: GetStaticProps = async (context) => {
+  const priceData = await fetch(
+    "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: `
+        query GetTokenPrice($pool: String!) {
+          pool(id: $pool) {
+            token0Price
+          }
+        }
+      `,
+        variables: {
+          pool: "0xc63b0708e2f7e69cb8a1df0e1389a98c35a76d52",
+        },
+      }),
+    }
+  ).then((res) => res.json());
+
+  const copiesData = await fetch(
+    "https://rpc.tenderly.co/fork/937040bd-7ee0-47b8-bcd9-ce1db5641f72",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "eth_call",
+        params: [
+          {
+            to: "0xfFC8ca4e83416B7E0443ff430Cc245646434B647",
+            data: "0x49fb553a",
+          },
+          "latest",
+        ],
+        id: 1,
+      }),
+    }
+  ).then((res) => res.json());
+
+  const { result: copies } = copiesData;
+
+  const remainingCopies = BigNumber.from(copies)
+    .toNumber()
+    .toString(2)
+    .split("")
+    .reduce((prev, curr) => prev - parseInt(curr), 50);
 
   return {
     props: {
-      auction,
+      priceData,
+      remainingCopies,
     },
+    revalidate: 60,
   };
 };
 

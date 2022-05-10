@@ -1,6 +1,5 @@
-import { ArrowRightSVG, tokens } from "@ensdomains/thorin";
+import { ArrowRightSVG, largerThan, tokens } from "@ensdomains/thorin";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { TwinkleKeyframes } from "./TwinkleKeyframes";
 
@@ -129,8 +128,14 @@ const LimitedEditionTag = styled(EditionTag)`
 `;
 
 const LimitedEditionTagContainer = styled(EditionTagContainer)`
-  align-items: center;
-  justify-content: flex-end;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  ${largerThan.sm`
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+  `}
 `;
 
 const LimitedEditionDescription = styled.p`
@@ -148,32 +153,48 @@ const LimitedEditionContainer = styled(Edition)`
   background-size: cover;
   background-position: bottom;
   border: none;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: ${tokens.space["4"]};
 
   &:hover {
     transform: none;
   }
+
+  padding: ${tokens.space["4"]};
+  height: auto;
+
+  ${largerThan.sm`
+    height: ${tokens.space["28"]};
+    flex-direction: column;
+    justify-content: space-between;
+    padding: ${tokens.space["4"]};
+  `}
 `;
 
 const LimitedEditionActions = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: stretch;
-  width: 100%;
+  flex-direction: column;
+  width: 80%;
   gap: ${tokens.space["2"]};
   flex-gap: ${tokens.space["2"]};
+  ${largerThan.sm`
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: stretch;
+  `}
 `;
 
 const LimitedEditionDetails = styled(EditionDetails)`
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  ${largerThan.sm`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   padding-top: ${tokens.space["1"]};
-  margin-bottom: ${tokens.space["1"]};
+  margin-bottom: ${tokens.space["2"]};
+  `}
 `;
 
 const LimitedEditionButton = styled.a`
@@ -185,8 +206,8 @@ const LimitedEditionButton = styled.a`
   color: white;
   font-size: ${tokens.fontSizes.small};
   font-weight: ${tokens.fontWeights.bold};
-  padding: ${tokens.space["1.5"]};
-  border-radius: ${tokens.radii["2.5xLarge"]};
+  padding: ${tokens.space["3"]};
+  border-radius: ${tokens.radii["2xLarge"]};
   transition: all 0.15s ease-in-out;
   cursor: pointer;
 
@@ -194,51 +215,29 @@ const LimitedEditionButton = styled.a`
     filter: brightness(1.2);
     transform: translateY(-1px);
   }
+
+  ${largerThan.sm`
+  padding: ${tokens.space["1.5"]};
+  `}
 `;
 
 const LimitedEdition = ({
   price,
-  endTime,
+  remaining,
 }: {
-  price: number;
-  endTime: number;
+  price: string;
+  remaining: number;
 }) => {
-  const [end, setEnd] = useState("00:00:00");
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const diff = endTime * 1000 - Date.now();
-      const days = Math.floor(diff / 86400000);
-      const hours = Math.floor((diff / 3600000) % 24)
-        .toString()
-        .padStart(2, "0");
-      const minutes = Math.floor((diff / 60000) % 60)
-        .toString()
-        .padStart(2, "0");
-      const seconds = Math.floor((diff / 1000) % 60)
-        .toString()
-        .padStart(2, "0");
-      if (diff < 0) {
-        clearInterval(interval);
-        setEnd("");
-      }
-      if (days === 0) {
-        setEnd(`${hours}:${minutes}:${seconds}`);
-      } else {
-        setEnd(`${days} ${days > 1 ? "days" : "day"}`);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [endTime]);
-
   return (
     <div>
       <LimitedEditionContainer as="div">
         <LimitedEditionDetails>
           <LimitedEditionName>Limited Edition</LimitedEditionName>
           <LimitedEditionTagContainer>
-            <LimitedEditionTag>Auction</LimitedEditionTag>
-            <LimitedEditionTag>{price.toFixed(2)} ENS</LimitedEditionTag>
+            <LimitedEditionTag>{remaining} Unclaimed</LimitedEditionTag>
+            <LimitedEditionTag>
+              {price.replace(/(?<=\.[0-9][0-9]).*/g, "")} ENS
+            </LimitedEditionTag>
           </LimitedEditionTagContainer>
         </LimitedEditionDetails>
         <LimitedEditionActions>
@@ -253,7 +252,7 @@ const LimitedEdition = ({
       <LimitedEditionDescription>
         25 numbered copies from a limited edition of 50 were available for
         auction. Books can now be redeemed by any wallet with more than 1 📘,
-        tokens can also be purchased on uniswap.
+        tokens can also be purchased on Uniswap.
       </LimitedEditionDescription>
     </div>
   );
@@ -267,38 +266,21 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-export interface Auction {
-  auctionId: number;
-  order: Order;
-  exactOrder: string;
-  symbolAuctioningToken: string;
-  symbolBiddingToken: string;
-  addressAuctioningToken: string;
-  addressBiddingToken: string;
-  decimalsAuctioningToken: string;
-  decimalsBiddingToken: string;
-  endTimeTimestamp: number;
-  orderCancellationEndDate: number;
-  startingTimestamp: number;
-  minimumBiddingAmountPerOrder: string;
-  minFundingThreshold: string;
-  allowListManager: string;
-  allowListSigner: string;
-  currentClearingPrice: number;
-  currentBiddingAmount: string;
-  isAtomicClosureAllowed: boolean;
-  isPrivateAuction: boolean;
-  chainId: string;
-  interestScore: number;
-  usdAmountTraded: number;
-}
+export type Price = {
+  data: {
+    pool: {
+      token0Price: string;
+    };
+  };
+};
 
-export interface Order {
-  price: number;
-  volume: number;
-}
-
-export const EditionList = ({ auction }: { auction: Auction }) => {
+export const EditionList = ({
+  price,
+  remaining,
+}: {
+  price: Price;
+  remaining: number;
+}) => {
   return (
     <Wrapper>
       <EditionTemplate
@@ -314,8 +296,8 @@ export const EditionList = ({ auction }: { auction: Auction }) => {
         link="https://www.blurb.com/b/11110201"
       />
       <LimitedEdition
-        price={auction.currentClearingPrice}
-        endTime={auction.endTimeTimestamp}
+        price={price.data.pool.token0Price}
+        remaining={remaining}
       />
     </Wrapper>
   );
