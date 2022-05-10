@@ -30,8 +30,8 @@ export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
     if (hasBalance) {
       return (
         <Typography variant="extraLarge">
-          You have {balanceData?.formatted.replace(/(?<=\.[0-9][0-9]).*/g, "")}{" "}
-          📘, meaning you are eligible to redeem a book!
+          You have {balanceData?.formatted.replace(/(.+\...).*/g, "$1")} 📘,
+          meaning you are eligible to redeem a book!
         </Typography>
       );
     }

@@ -236,7 +236,7 @@ const LimitedEdition = ({
           <LimitedEditionTagContainer>
             <LimitedEditionTag>{remaining} Unclaimed</LimitedEditionTag>
             <LimitedEditionTag>
-              {price.replace(/(?<=\.[0-9][0-9]).*/g, "")} ENS
+              {price.replace(/(.+\...).*/g, "$1")} ENS
             </LimitedEditionTag>
           </LimitedEditionTagContainer>
         </LimitedEditionDetails>
