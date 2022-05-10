@@ -31,13 +31,13 @@ export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
       return (
         <Typography variant="extraLarge">
           You have {balanceData?.formatted.replace(/(?<=\.[0-9][0-9]).*/g, "")}{" "}
-          📘, meaning you are eligible to claim a book!
+          📘, meaning you are eligible to redeem a book!
         </Typography>
       );
     }
     return (
       <Typography variant="extraLarge">
-        You need at least 1 $📘 to claim!
+        You need at least 1 $📘 to redeem!
       </Typography>
     );
   };
@@ -47,9 +47,9 @@ export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
       <Box>
         <div style={{ marginBottom: tokens.space["4"] }}>
           <Typography variant="extraLarge" weight="bold">
-            Claim Status
+            Redemption Status
           </Typography>
-          <Typography>Only eligible wallets can claim</Typography>
+          <Typography>Only eligible wallets can redeem</Typography>
         </div>
         <Main />
       </Box>

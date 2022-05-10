@@ -8,7 +8,7 @@ import { Box } from "../components/Box";
 import { ButtonBox } from "../components/ButtonBox";
 import { Input } from "../components/InputStyles";
 import { SparkleButton } from "../components/PurpleButton";
-import { Form } from "../pages/claim";
+import { Form } from "../pages/redeem";
 
 const StepThreeBox = styled(Box)`
   & input,
@@ -192,7 +192,7 @@ ${formData.countryName}`}
             setStep(3);
           }}
         >
-          Claim
+          Redeem
         </SparkleButton>
       </ButtonBox>
     </>

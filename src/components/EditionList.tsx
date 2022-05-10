@@ -1,7 +1,11 @@
 import { ArrowRightSVG, tokens } from "@ensdomains/thorin";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { TwinkleKeyframes } from "./TwinkleKeyframes";
+
+const uniswapLink =
+  "https://app.uniswap.org/#/swap?chain=mainnet&inputCurrency=0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72&outputCurrency=0xfFC8ca4e83416B7E0443ff430Cc245646434B647&exactAmount=1&exactField=output";
 
 const EditionName = styled.h4`
   font-size: ${tokens.fontSizes.extraLarge};
@@ -116,33 +120,17 @@ const EditionTemplate = ({
 
 const LimitedEditionName = styled(EditionName)`
   color: white;
+  width: max-content;
 `;
 
 const LimitedEditionTag = styled(EditionTag)`
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   color: rgba(255, 255, 255, 0.75);
 `;
 
-const LimitedEditionLinkTitle = styled(EditionLinkTitle)`
-  color: #dfd5f9;
-  opacity: 1;
-`;
-
-const LimitedEditionArrow = styled(EditionArrow)`
-  color: #ffffff;
-  opacity: 0.85;
-`;
-
-const LimitedEditionAuctionDetails = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-  font-weight: ${tokens.fontWeights.medium};
-`;
-
-const LimitedEditionBidTime = styled.p`
-  color: #aea8bd;
+const LimitedEditionTagContainer = styled(EditionTagContainer)`
+  align-items: center;
+  justify-content: flex-end;
 `;
 
 const LimitedEditionDescription = styled.p`
@@ -159,15 +147,52 @@ const LimitedEditionContainer = styled(Edition)`
   background-color: none;
   background-size: cover;
   background-position: bottom;
+  border: none;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: ${tokens.space["4"]};
+
+  &:hover {
+    transform: none;
+  }
+`;
+
+const LimitedEditionActions = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: stretch;
+  width: 100%;
+  gap: ${tokens.space["2"]};
+  flex-gap: ${tokens.space["2"]};
+`;
+
+const LimitedEditionDetails = styled(EditionDetails)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: ${tokens.space["1"]};
+  margin-bottom: ${tokens.space["1"]};
+`;
+
+const LimitedEditionButton = styled.a`
+  display: block;
+  text-align: center;
+  width: 100%;
   border: 2px solid #7a59da;
+  background: rgba(67, 48, 118, 0.85);
+  color: white;
+  font-size: ${tokens.fontSizes.small};
+  font-weight: ${tokens.fontWeights.bold};
+  padding: ${tokens.space["1.5"]};
+  border-radius: ${tokens.radii["2.5xLarge"]};
   transition: all 0.15s ease-in-out;
+  cursor: pointer;
 
   &:hover {
     filter: brightness(1.2);
-
-    ${LimitedEditionArrow}, ${LimitedEditionLinkTitle} {
-      opacity: 1;
-    }
+    transform: translateY(-1px);
   }
 `;
 
@@ -208,31 +233,27 @@ const LimitedEdition = ({
 
   return (
     <div>
-      <LimitedEditionContainer
-        as="a"
-        href="https://gnosis-auction.eth.link/#/auction?auctionId=231&chainId=1#topAnchor"
-      >
-        <EditionDetails>
+      <LimitedEditionContainer as="div">
+        <LimitedEditionDetails>
           <LimitedEditionName>Limited Edition</LimitedEditionName>
-          <EditionTagContainer>
+          <LimitedEditionTagContainer>
             <LimitedEditionTag>Auction</LimitedEditionTag>
             <LimitedEditionTag>{price.toFixed(2)} ENS</LimitedEditionTag>
-          </EditionTagContainer>
-        </EditionDetails>
-        <EditionAction>
-          <LimitedEditionAuctionDetails>
-            <LimitedEditionLinkTitle>Bid</LimitedEditionLinkTitle>
-            <LimitedEditionBidTime>
-              {end === "" ? "Auction ended" : `Ends in ${end}`}
-            </LimitedEditionBidTime>
-          </LimitedEditionAuctionDetails>
-          <LimitedEditionArrow />
-        </EditionAction>
+          </LimitedEditionTagContainer>
+        </LimitedEditionDetails>
+        <LimitedEditionActions>
+          <Link passHref href="/redeem">
+            <LimitedEditionButton>Redeem</LimitedEditionButton>
+          </Link>
+          <Link passHref href={uniswapLink}>
+            <LimitedEditionButton>Buy</LimitedEditionButton>
+          </Link>
+        </LimitedEditionActions>
       </LimitedEditionContainer>
       <LimitedEditionDescription>
-        25 numbered copies from a limited edition of 50 are available. Bid in a
-        batch auction for a &apos;book token&apos; that can be redeemed for a
-        physical copy of the book.
+        25 numbered copies from a limited edition of 50 were available for
+        auction. Books can now be redeemed by any wallet with more than 1 📘,
+        tokens can also be purchased on uniswap.
       </LimitedEditionDescription>
     </div>
   );

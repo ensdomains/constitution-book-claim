@@ -15,7 +15,7 @@ import { ButtonBox } from "../components/ButtonBox";
 import { Input } from "../components/InputStyles";
 import { PurpleButton } from "../components/PurpleButton";
 import { SelectWrapper } from "../components/SelectWrapper";
-import { Form } from "../pages/claim";
+import { Form } from "../pages/redeem";
 import mq from "../utils/mediaQuery";
 
 const AddressAutofill: typeof AddressAutofillType = dynamic(

@@ -90,7 +90,7 @@ const TwitterButton = styled.a`
 `;
 
 const twitterIntent =
-  "I%20claimed%20a%20limited%20edition%20ENS%20DAO%20Constitution%21";
+  "I%20redeemed%20a%20limited%20edition%20ENS%20DAO%20Constitution%21";
 
 export const StepFour = ({
   setStep,
@@ -148,8 +148,8 @@ export const StepFour = ({
           )}
           <div style={{ marginTop: tokens.space["2"] }} />
           <Typography variant="large">
-            Your limited edition constitution book was claimed, and will be sent
-            to you shortly!
+            Your limited edition constitution book was redeemed, and will be
+            sent to you shortly!
           </Typography>
         </PendingTransaction>
       );

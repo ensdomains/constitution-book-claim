@@ -162,7 +162,7 @@ const Home: NextPage = () => {
   const Component = steps[step].component;
 
   const setStep = (step: number) => {
-    router.push(`/claim?step=${step + 1}`, undefined, { shallow: true });
+    router.push(`/redeem?step=${step + 1}`, undefined, { shallow: true });
   };
 
   useEffect(() => {
@@ -222,7 +222,7 @@ const Home: NextPage = () => {
       <Content>
         <Heading>
           <FadedTitle style={{ alignSelf: "flex-start" }}>
-            Claim your book
+            Redeem your book
           </FadedTitle>
           <HeadingState>
             <Title style={{ alignSelf: "flex-start" }}>
