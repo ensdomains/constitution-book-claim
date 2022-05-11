@@ -266,19 +266,11 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-export type Price = {
-  data: {
-    pool: {
-      token0Price: string;
-    };
-  };
-};
-
 export const EditionList = ({
   price,
   remaining,
 }: {
-  price: Price;
+  price: string;
   remaining: number;
 }) => {
   return (
@@ -295,10 +287,7 @@ export const EditionList = ({
         linkTitle="Buy"
         link="https://www.blurb.com/b/11110201"
       />
-      <LimitedEdition
-        price={price.data.pool.token0Price}
-        remaining={remaining}
-      />
+      <LimitedEdition price={price} remaining={remaining} />
     </Wrapper>
   );
 };

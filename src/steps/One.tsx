@@ -8,11 +8,11 @@ import { PurpleButton } from "../components/PurpleButton";
 
 export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
   const router = useRouter();
-  const [{ data: accountData, loading: accountLoading }] = useAccount();
-  const [{ data: balanceData, loading: balanceLoading }] = useBalance({
+  const { data: accountData, isLoading: accountLoading } = useAccount();
+  const { data: balanceData, isLoading: balanceLoading } = useBalance({
     addressOrName: accountData?.address,
     token: "0xfFC8ca4e83416B7E0443ff430Cc245646434B647",
-    skip: !accountData?.address,
+    enabled: !!accountData?.address,
   });
   const hasBalance = balanceData?.value.gt(ethers.utils.parseEther("1"));
 

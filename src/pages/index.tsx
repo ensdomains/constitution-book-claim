@@ -82,7 +82,7 @@ const InnerContentFlex = styled.div`
 `;
 
 const Home: NextPage = ({
-  priceData,
+  price,
   remainingCopies,
 }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
@@ -102,7 +102,7 @@ const Home: NextPage = ({
       </Heading>
       <InnerContentFlex>
         <ImageCarousell />
-        <EditionList remaining={remainingCopies} price={priceData} />
+        <EditionList remaining={remainingCopies} price={price} />
       </InnerContentFlex>
     </Basic>
   );
@@ -120,20 +120,26 @@ export const getStaticProps: GetStaticProps = async (context) => {
         query: `
         query GetTokenPrice($pool: String!) {
           pool(id: $pool) {
-            token0Price
+            token1Price
           }
         }
       `,
         variables: {
-          pool: "0xc63b0708e2f7e69cb8a1df0e1389a98c35a76d52",
+          pool: "0x9d84be498df749cefc63baa542a1d0f28471f67d",
         },
       }),
     }
   ).then((res) => res.json());
 
-  const copiesData = await fetch(
-    "https://rpc.tenderly.co/fork/937040bd-7ee0-47b8-bcd9-ce1db5641f72",
-    {
+  let price = "?";
+
+  try {
+    price = priceData.data.pool.token1Price;
+  } catch {}
+
+  let remainingCopies = 50;
+  try {
+    const copiesData = await fetch("https://cloudflare-eth.com", {
       method: "POST",
       body: JSON.stringify({
         jsonrpc: "2.0",
@@ -147,20 +153,20 @@ export const getStaticProps: GetStaticProps = async (context) => {
         ],
         id: 1,
       }),
-    }
-  ).then((res) => res.json());
+    }).then((res) => res.json());
 
-  const { result: copies } = copiesData;
+    const { result: copies } = copiesData;
 
-  const remainingCopies = BigNumber.from(copies)
-    .toNumber()
-    .toString(2)
-    .split("")
-    .reduce((prev, curr) => prev - parseInt(curr), 50);
+    remainingCopies = BigNumber.from(copies)
+      .toNumber()
+      .toString(2)
+      .split("")
+      .reduce((prev, curr) => prev - parseInt(curr), 50);
+  } catch {}
 
   return {
     props: {
-      priceData,
+      price,
       remainingCopies,
     },
     revalidate: 60,

@@ -102,9 +102,9 @@ export const StepFour = ({
   selectedCopy: string | null;
 }) => {
   const router = useRouter();
-  const [{ data: signer }] = useSigner();
+  const { data: signer } = useSigner();
   const [otherError, setOtherError] = useState("");
-  const [contractWrite, write] = useContractWrite(
+  const contractWrite = useContractWrite(
     {
       addressOrName: "0xfFC8ca4e83416B7E0443ff430Cc245646434B647",
       contractInterface: abi,
@@ -115,15 +115,15 @@ export const StepFour = ({
       args: ["0x" + orderID, selectedCopy],
     }
   );
-  const [transaction] = useWaitForTransaction({
+  const transaction = useWaitForTransaction({
     hash: contractWrite.data?.hash,
   });
 
   const tryTransaction = async () =>
-    write().catch((err) => setOtherError(err.message));
+    contractWrite.writeAsync().catch((err) => setOtherError(err.message));
 
   useEffect(() => {
-    if (!contractWrite.data && !contractWrite.loading) {
+    if (!contractWrite.data && !contractWrite.isLoading) {
       tryTransaction();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -224,7 +224,7 @@ export const StepFour = ({
         ) : (
           <PurpleButton
             variant="primary"
-            disabled={!!contractWrite.data || contractWrite.loading}
+            disabled={!!contractWrite.data || contractWrite.isLoading}
             onClick={() => tryTransaction()}
           >
             Retry

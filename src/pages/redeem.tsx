@@ -4,7 +4,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { useAccount } from "wagmi";
+import { useDisconnect } from "wagmi";
 import { PurpleButton } from "../components/PurpleButton";
 import { StyledIconEthTransparentInverted } from "../components/StyledIconEthTransparentInverted";
 import { Basic } from "../layouts/Basic";
@@ -143,7 +143,7 @@ const steps = [
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const [_, disconnect] = useAccount();
+  const { disconnect } = useDisconnect();
   const [step, _setStep] = useState(0);
   const [orderID, setOrderID] = useState<string | null>(null);
   const [selectedCopy, setSelectedCopy] = useState<string | null>(null);
@@ -179,12 +179,7 @@ const Home: NextPage = () => {
       withWrap={false}
       headerChildren={
         <ConnectButton.Custom>
-          {({
-            account,
-            openConnectModal,
-            openAccountModal,
-            accountModalOpen,
-          }) =>
+          {({ account, openConnectModal }) =>
             !account ? (
               <PurpleButton
                 gradient={true}

@@ -185,7 +185,7 @@ export const StepTwo = ({
                     boxShadow: tokens.boxShadows["light"]["0.25"],
                   },
                 }}
-                accessToken="pk.eyJ1IjoidGF5dGVtcyIsImEiOiJjbDJwZWw2YnYyajNoM2lwOTF2b2U4OXhwIn0.ZKOCHRYd0hn2SKpiu1nTHg"
+                accessToken="pk.eyJ1IjoidGF5dGVtcyIsImEiOiJjbDMwdzl5Z2kwcjVzM2NveWVhYmhvcnNxIn0.bR_f4cTiyBw8uLsa0dBnag"
               >
                 <Input
                   label={
