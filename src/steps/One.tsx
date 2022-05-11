@@ -1,6 +1,8 @@
 import { Button, tokens, Typography } from "@ensdomains/thorin";
 import { ethers } from "ethers";
+import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { useAccount, useBalance } from "wagmi";
 import { Box } from "../components/Box";
 import { ButtonBox } from "../components/ButtonBox";
@@ -15,6 +17,23 @@ export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
     enabled: !!accountData?.address,
   });
   const hasBalance = balanceData?.value.gte(ethers.utils.parseEther("1"));
+  const [unclaimedBalance, setUnclaimedBalance] = useState(0);
+
+  useEffect(() => {
+    const run = async () =>
+      await fetch(
+        "https://ido-api-mainnet.gnosis.io/api/v1/get_user_orders_without_canceled_or_claimed/231/" +
+          accountData?.address
+      )
+        .then((res) => res.json())
+        .then((arr: string[]) => setUnclaimedBalance(arr.length))
+        .catch(() => setUnclaimedBalance(0));
+    if (accountData?.address) {
+      try {
+        run();
+      } catch {}
+    }
+  }, [accountData?.address]);
 
   const Main = () => {
     if (!accountData?.address && !accountLoading) {
@@ -52,6 +71,18 @@ export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
           <Typography>Only eligible wallets can redeem</Typography>
         </div>
         <Main />
+        {unclaimedBalance > 0 && (
+          <Link
+            href="https://gnosis-auction.eth.link/#/auction?auctionId=231&chainId=1%23topAnchor"
+            passHref
+          >
+            <a>
+              <Typography color="blue">
+                You have {unclaimedBalance} unclaimed $📘, click here to claim
+              </Typography>
+            </a>
+          </Link>
+        )}
       </Box>
       <ButtonBox>
         <Button variant="secondary" onClick={() => router.push("/")}>
