@@ -14,7 +14,7 @@ export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
     token: "0xfFC8ca4e83416B7E0443ff430Cc245646434B647",
     enabled: !!accountData?.address,
   });
-  const hasBalance = balanceData?.value.gt(ethers.utils.parseEther("1"));
+  const hasBalance = balanceData?.value.gte(ethers.utils.parseEther("1"));
 
   const Main = () => {
     if (!accountData?.address && !accountLoading) {
