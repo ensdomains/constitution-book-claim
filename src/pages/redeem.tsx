@@ -144,6 +144,7 @@ const steps = [
 const Home: NextPage = () => {
   const router = useRouter();
   const { disconnect } = useDisconnect();
+  const [mounted, setMounted] = useState(false);
   const [step, _setStep] = useState(0);
   const [orderID, setOrderID] = useState<string | null>(null);
   const [selectedCopy, setSelectedCopy] = useState<string | null>(null);
@@ -174,7 +175,11 @@ const Home: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.query.step]);
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  return mounted ? (
     <Basic
       withWrap={false}
       headerChildren={
@@ -243,7 +248,7 @@ const Home: NextPage = () => {
         </InnerContentFlex>
       </Content>
     </Basic>
-  );
+  ) : null;
 };
 
 export default Home;
