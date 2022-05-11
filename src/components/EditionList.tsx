@@ -1,11 +1,10 @@
-import { ArrowRightSVG, tokens } from "@ensdomains/thorin";
-import { useEffect, useState } from "react";
-import { renderToString } from "react-dom/server";
-import styled, { css, keyframes } from "styled-components";
-import {
-  LimitedEditionGradient,
-  TwinkleType,
-} from "../assets/LimitedEditionGradient";
+import { ArrowRightSVG, largerThan, tokens } from "@ensdomains/thorin";
+import Link from "next/link";
+import styled from "styled-components";
+import { TwinkleKeyframes } from "./TwinkleKeyframes";
+
+const uniswapLink =
+  "https://app.uniswap.org/#/swap?chain=mainnet&inputCurrency=0xC18360217D8F7Ab5e7c516566761Ea12Ce7F9D72&outputCurrency=0xfFC8ca4e83416B7E0443ff430Cc245646434B647&exactAmount=1&exactField=output";
 
 const EditionName = styled.h4`
   font-size: ${tokens.fontSizes.extraLarge};
@@ -120,33 +119,23 @@ const EditionTemplate = ({
 
 const LimitedEditionName = styled(EditionName)`
   color: white;
+  width: max-content;
 `;
 
 const LimitedEditionTag = styled(EditionTag)`
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   color: rgba(255, 255, 255, 0.75);
 `;
 
-const LimitedEditionLinkTitle = styled(EditionLinkTitle)`
-  color: #dfd5f9;
-  opacity: 1;
-`;
-
-const LimitedEditionArrow = styled(EditionArrow)`
-  color: #ffffff;
-  opacity: 0.85;
-`;
-
-const LimitedEditionAuctionDetails = styled.div`
-  display: flex;
+const LimitedEditionTagContainer = styled(EditionTagContainer)`
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: center;
-  font-weight: ${tokens.fontWeights.medium};
-`;
-
-const LimitedEditionBidTime = styled.p`
-  color: #aea8bd;
+  ${largerThan.sm`
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+  `}
 `;
 
 const LimitedEditionDescription = styled.p`
@@ -158,137 +147,112 @@ const LimitedEditionDescription = styled.p`
   padding: 0 ${tokens.space["2"]};
 `;
 
-const generateTwinkle = (): TwinkleType => {
-  const gradient = [];
-  for (let i = 0; i < 17; i++) {
-    gradient.push(Math.random());
-  }
-  return gradient as TwinkleType;
-};
-
-const generateTwinkleFrame = () => css`
-  background: url("data:image/svg+xml;base64,${Buffer.from(
-    renderToString(LimitedEditionGradient(generateTwinkle()))
-  ).toString("base64")}");
-  background-size: cover;
-  background-position: bottom;
-`;
-
-const TwinkleKeyframes = keyframes`
-0% {
-${generateTwinkleFrame()}
-}
-10% {
-${generateTwinkleFrame()}
-}
-20% {
-${generateTwinkleFrame()}
-}
-30% {
-${generateTwinkleFrame()}
-}
-40% { 
-${generateTwinkleFrame()}
-}
-50% {
-${generateTwinkleFrame()}
-}
-60% {
-${generateTwinkleFrame()}
-}
-70% {
-${generateTwinkleFrame()}
-}
-80% {
-${generateTwinkleFrame()}
-}
-90% {
-${generateTwinkleFrame()}
-}
-100% {
-${generateTwinkleFrame()}
-}
-`;
-
 const LimitedEditionContainer = styled(Edition)`
   animation: ${TwinkleKeyframes} 15s linear alternate infinite;
   background-color: none;
   background-size: cover;
   background-position: bottom;
+  border: none;
+
+  &:hover {
+    transform: none;
+  }
+
+  padding: ${tokens.space["4"]};
+  height: auto;
+
+  ${largerThan.sm`
+    height: ${tokens.space["28"]};
+    flex-direction: column;
+    justify-content: space-between;
+    padding: ${tokens.space["4"]};
+  `}
+`;
+
+const LimitedEditionActions = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  gap: ${tokens.space["2"]};
+  flex-gap: ${tokens.space["2"]};
+  ${largerThan.sm`
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: stretch;
+  `}
+`;
+
+const LimitedEditionDetails = styled(EditionDetails)`
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  ${largerThan.sm`
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: ${tokens.space["1"]};
+  margin-bottom: ${tokens.space["2"]};
+  `}
+`;
+
+const LimitedEditionButton = styled.a`
+  display: block;
+  text-align: center;
+  width: 100%;
   border: 2px solid #7a59da;
+  background: rgba(67, 48, 118, 0.85);
+  color: white;
+  font-size: ${tokens.fontSizes.small};
+  font-weight: ${tokens.fontWeights.bold};
+  padding: ${tokens.space["3"]};
+  border-radius: ${tokens.radii["2xLarge"]};
   transition: all 0.15s ease-in-out;
+  cursor: pointer;
 
   &:hover {
     filter: brightness(1.2);
-
-    ${LimitedEditionArrow}, ${LimitedEditionLinkTitle} {
-      opacity: 1;
-    }
+    transform: translateY(-1px);
   }
+
+  ${largerThan.sm`
+  padding: ${tokens.space["1.5"]};
+  `}
 `;
 
 const LimitedEdition = ({
   price,
-  endTime,
+  remaining,
 }: {
-  price: number;
-  endTime: number;
+  price: string;
+  remaining: number;
 }) => {
-  const [end, setEnd] = useState("00:00:00");
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const diff = endTime * 1000 - Date.now();
-      const days = Math.floor(diff / 86400000);
-      const hours = Math.floor((diff / 3600000) % 24)
-        .toString()
-        .padStart(2, "0");
-      const minutes = Math.floor((diff / 60000) % 60)
-        .toString()
-        .padStart(2, "0");
-      const seconds = Math.floor((diff / 1000) % 60)
-        .toString()
-        .padStart(2, "0");
-      if (diff < 0) {
-        clearInterval(interval);
-        setEnd("");
-      }
-      if (days === 0) {
-        setEnd(`${hours}:${minutes}:${seconds}`);
-      } else {
-        setEnd(`${days} ${days > 1 ? "days" : "day"}`);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [endTime]);
-
   return (
     <div>
-      <LimitedEditionContainer
-        as="a"
-        href="https://gnosis-auction.eth.link/#/auction?auctionId=231&chainId=1#topAnchor"
-      >
-        <EditionDetails>
+      <LimitedEditionContainer as="div">
+        <LimitedEditionDetails>
           <LimitedEditionName>Limited Edition</LimitedEditionName>
-          <EditionTagContainer>
-            <LimitedEditionTag>Auction</LimitedEditionTag>
-            <LimitedEditionTag>{price.toFixed(2)} ENS</LimitedEditionTag>
-          </EditionTagContainer>
-        </EditionDetails>
-        <EditionAction>
-          <LimitedEditionAuctionDetails>
-            <LimitedEditionLinkTitle>Bid</LimitedEditionLinkTitle>
-            <LimitedEditionBidTime>
-              {end === "" ? "Auction ended" : `Ends in ${end}`}
-            </LimitedEditionBidTime>
-          </LimitedEditionAuctionDetails>
-          <LimitedEditionArrow />
-        </EditionAction>
+          <LimitedEditionTagContainer>
+            <LimitedEditionTag>{remaining} Unclaimed</LimitedEditionTag>
+            <LimitedEditionTag>
+              {price.replace(/(.+\...).*/g, "$1")} ENS
+            </LimitedEditionTag>
+          </LimitedEditionTagContainer>
+        </LimitedEditionDetails>
+        <LimitedEditionActions>
+          <Link passHref href="/redeem">
+            <LimitedEditionButton>Redeem</LimitedEditionButton>
+          </Link>
+          <Link passHref href={uniswapLink}>
+            <LimitedEditionButton>Buy</LimitedEditionButton>
+          </Link>
+        </LimitedEditionActions>
       </LimitedEditionContainer>
       <LimitedEditionDescription>
-        25 numbered copies from a limited edition of 50 are available. Bid in a
-        batch auction for a &apos;book token&apos; that can be redeemed for a
-        physical copy of the book.
+        25 numbered copies from a limited edition of 50 were available for
+        auction. Books can now be redeemed by any wallet with more than 1 📘,
+        tokens can also be purchased on Uniswap.
       </LimitedEditionDescription>
     </div>
   );
@@ -302,38 +266,13 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-export interface Auction {
-  auctionId: number;
-  order: Order;
-  exactOrder: string;
-  symbolAuctioningToken: string;
-  symbolBiddingToken: string;
-  addressAuctioningToken: string;
-  addressBiddingToken: string;
-  decimalsAuctioningToken: string;
-  decimalsBiddingToken: string;
-  endTimeTimestamp: number;
-  orderCancellationEndDate: number;
-  startingTimestamp: number;
-  minimumBiddingAmountPerOrder: string;
-  minFundingThreshold: string;
-  allowListManager: string;
-  allowListSigner: string;
-  currentClearingPrice: number;
-  currentBiddingAmount: string;
-  isAtomicClosureAllowed: boolean;
-  isPrivateAuction: boolean;
-  chainId: string;
-  interestScore: number;
-  usdAmountTraded: number;
-}
-
-export interface Order {
-  price: number;
-  volume: number;
-}
-
-export const EditionList = ({ auction }: { auction: Auction }) => {
+export const EditionList = ({
+  price,
+  remaining,
+}: {
+  price: string;
+  remaining: number;
+}) => {
   return (
     <Wrapper>
       <EditionTemplate
@@ -348,10 +287,7 @@ export const EditionList = ({ auction }: { auction: Auction }) => {
         linkTitle="Buy"
         link="https://www.blurb.com/b/11110201"
       />
-      <LimitedEdition
-        price={auction.currentClearingPrice}
-        endTime={auction.endTimeTimestamp}
-      />
+      <LimitedEdition price={price} remaining={remaining} />
     </Wrapper>
   );
 };

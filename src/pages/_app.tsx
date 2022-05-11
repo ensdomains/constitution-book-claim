@@ -1,16 +1,15 @@
 import type { DefaultTheme } from "@ensdomains/thorin";
 import { ThorinGlobalStyles } from "@ensdomains/thorin";
 import {
-  Chain,
-  connectorsForWallets,
+  apiProvider,
+  configureChains,
   getDefaultWallets,
   RainbowKitProvider,
 } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
-import { providers } from "ethers";
 import type { AppProps } from "next/app";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import { chain, WagmiProvider } from "wagmi";
+import { chain, createClient, WagmiProvider } from "wagmi";
 import "../styles.css";
 
 const theme: DefaultTheme = {
@@ -45,6 +44,10 @@ a {
   -moz-font-feature-settings: "ss01" on, "ss03" on, "ss04" on;
 }
 
+mapbox-search-listbox > div > div[aria-hidden="true"] {
+  max-width: 0;
+}
+
 .modal {
   position: relative;
   z-index: 20;
@@ -59,39 +62,35 @@ a {
 }
 `;
 
-const infuraId = process.env.INFURA_ID;
+const { provider, chains } = configureChains(
+  [chain.mainnet],
+  [
+    apiProvider.infura("90f210707d3c450f847659dc9a3436ea"),
+    apiProvider.jsonRpc(() => ({ rpcUrl: "https://cloudflare-eth.com" })),
+  ]
+);
 
-const provider = ({ chainId }: { chainId?: number }) =>
-  new providers.InfuraProvider(chainId, infuraId);
-
-const chains: Chain[] = [
-  { ...chain.mainnet, name: "Ethereum" },
-  { ...chain.polygonMainnet, name: "Polygon" },
-  { ...chain.optimism, name: "Optimism" },
-  { ...chain.arbitrumOne, name: "Arbitrum" },
-];
-
-const wallets = getDefaultWallets({
+const { connectors } = getDefaultWallets({
+  appName: "ENS Constitution Claim",
   chains,
-  infuraId,
-  appName: "My RainbowKit App",
-  jsonRpcUrl: ({ chainId }) =>
-    chains.find((x) => x.id === chainId)?.rpcUrls?.[0] ??
-    chain.mainnet.rpcUrls[0],
 });
 
-const connectors = connectorsForWallets(wallets);
+const wagmiClient = createClient({
+  autoConnect: true,
+  connectors,
+  provider,
+});
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <ThemeProvider theme={theme}>
-      <RainbowKitProvider chains={chains}>
-        <WagmiProvider autoConnect connectors={connectors} provider={provider}>
+      <WagmiProvider client={wagmiClient}>
+        <RainbowKitProvider chains={chains}>
           <GlobalStyle />
           <ThorinGlobalStyles />
           <Component {...pageProps} />
-        </WagmiProvider>
-      </RainbowKitProvider>
+        </RainbowKitProvider>
+      </WagmiProvider>
     </ThemeProvider>
   );
 }

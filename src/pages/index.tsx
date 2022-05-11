@@ -1,59 +1,11 @@
 import { tokens, Typography } from "@ensdomains/thorin";
-import type {
-  GetServerSideProps,
-  InferGetServerSidePropsType,
-  NextPage,
-} from "next";
-import Head from "next/head";
+import { BigNumber } from "ethers";
+import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
 import styled from "styled-components";
-import Logo from "../assets/Logo.svg";
 import { EditionList } from "../components/EditionList";
 import { ImageCarousell } from "../components/ImageCarousell";
+import { Basic } from "../layouts/Basic";
 import mq from "../utils/mediaQuery";
-
-const StyledLogo = styled(Logo)`
-  width: 135px;
-  height: 56px;
-`;
-
-const Header = styled.header`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-
-  ${mq.medium.min`
-    padding: ${tokens.space["4"]};
-  `}
-`;
-
-const BasicWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-const BasicContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100vh;
-  padding: min(10%, 40px) min(5%, 40px);
-  flex-gap: ${tokens.space["8"]};
-  gap: ${tokens.space["8"]};
-`;
-
-const Content = styled.div`
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: ${tokens.space["8"]};
-  flex-gap: ${tokens.space["8"]};
-`;
 
 const Heading = styled.div`
   display: flex;
@@ -64,7 +16,7 @@ const Heading = styled.div`
   flex-gap: ${tokens.space["4"]};
   max-width: ${tokens.space["168"]};
 
-  ${mq.medium.min`
+  ${mq.large.min`
     align-items: center;
   `}
 `;
@@ -80,7 +32,7 @@ const Title = styled.h1`
   text-align: left;
   line-height: ${tokens.lineHeights["1.25"]};
 
-  ${mq.medium.min`
+  ${mq.large.min`
     text-align: center;
   `}
 `;
@@ -93,7 +45,7 @@ const Subtitle = styled.h3`
   text-align: left;
   margin-bottom: ${tokens.space["4"]};
 
-  ${mq.medium.min`
+  ${mq.large.min`
     text-align: center;
   `}
 `;
@@ -106,7 +58,7 @@ const Flavour = styled(Typography)`
   opacity: 0.75;
   text-align: left;
 
-  ${mq.medium.min`
+  ${mq.large.min`
     text-align: center;
   `}
 `;
@@ -130,52 +82,94 @@ const InnerContentFlex = styled.div`
 `;
 
 const Home: NextPage = ({
-  auction,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  price,
+  remainingCopies,
+}: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
-    <BasicWrapper>
-      <Head>
-        <title>Constitution Book - ENS DAO</title>
-      </Head>
-      <BasicContainer>
-        <Header>
-          <StyledLogo />
-          <div style={{ flexGrow: "1" }} />
-        </Header>
-        <Content>
-          <Heading>
-            <Title>The ENS Constitution</Title>
-            <Subtitle>
-              A set of binding rules that determine what governance actions are
-              legitimate for the DAO to take.
-            </Subtitle>
-            <Flavour>
-              The constitution, along with all 48,823 signers who provided an
-              ENS name, is available as a free digital download, as well as a
-              quality hardcover book, and a beautiful no-expense-spared limited
-              edition of 50 slipcased copies.
-            </Flavour>
-          </Heading>
-          <InnerContentFlex>
-            <ImageCarousell />
-            <EditionList auction={auction} />
-          </InnerContentFlex>
-        </Content>
-      </BasicContainer>
-    </BasicWrapper>
+    <Basic>
+      <Heading>
+        <Title>The ENS Constitution</Title>
+        <Subtitle>
+          A set of binding rules that determine what governance actions are
+          legitimate for the DAO to take.
+        </Subtitle>
+        <Flavour>
+          The constitution, along with all 48,823 signers who provided an ENS
+          name, is available as a free digital download, as well as a quality
+          hardcover book, and a beautiful no-expense-spared limited edition of
+          50 slipcased copies.
+        </Flavour>
+      </Heading>
+      <InnerContentFlex>
+        <ImageCarousell />
+        <EditionList remaining={remainingCopies} price={price} />
+      </InnerContentFlex>
+    </Basic>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const auctionRes = await fetch(
-    "https://ido-api-mainnet.gnosis.io/api/v1/get_auction_with_details/231"
-  );
-  const auction = await auctionRes.json();
+export const getStaticProps: GetStaticProps = async (context) => {
+  const priceData = await fetch(
+    "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query: `
+        query GetTokenPrice($pool: String!) {
+          pool(id: $pool) {
+            token1Price
+          }
+        }
+      `,
+        variables: {
+          pool: "0x9d84be498df749cefc63baa542a1d0f28471f67d",
+        },
+      }),
+    }
+  ).then((res) => res.json());
+
+  let price = "?";
+
+  try {
+    price = priceData.data.pool.token1Price;
+  } catch {}
+
+  let remainingCopies = 50;
+  try {
+    const copiesData = await fetch("https://cloudflare-eth.com", {
+      method: "POST",
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "eth_call",
+        params: [
+          {
+            to: "0xfFC8ca4e83416B7E0443ff430Cc245646434B647",
+            data: "0x49fb553a",
+          },
+          "latest",
+        ],
+        id: 1,
+      }),
+    }).then((res) => res.json());
+
+    const { result: copies } = copiesData;
+
+    remainingCopies = BigNumber.from(copies)
+      .toNumber()
+      .toString(2)
+      .split("")
+      .reduce((prev, curr) => prev - parseInt(curr), 50);
+  } catch {}
 
   return {
     props: {
-      auction,
+      price,
+      remainingCopies,
     },
+    revalidate: 60,
   };
 };
 
