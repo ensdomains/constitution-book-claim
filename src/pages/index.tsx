@@ -120,7 +120,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
         query: `
         query GetTokenPrice($pool: String!) {
           pool(id: $pool) {
-            token1Price
+            token0Price
           }
         }
       `,
@@ -134,7 +134,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   let price = "?";
 
   try {
-    price = priceData.data.pool.token1Price;
+    price = priceData.data.pool.token0Price;
   } catch {}
 
   let remainingCopies = 50;
