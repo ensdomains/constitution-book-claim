@@ -1,6 +1,6 @@
+/* eslint-disable @next/next/no-img-element */
 import { Modal, Select, tokens } from "@ensdomains/thorin";
 import type { StaticImageData } from "next/image";
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { DE, LE, UE } from "../assets/imgImports";
@@ -31,6 +31,9 @@ const Preview = styled.div`
   justify-content: center;
   width: 100%;
   max-width: ${tokens.space["80"]};
+  & > img {
+    width: 100%;
+  }
 `;
 
 const ImageThumbnailContainer = styled.div`
@@ -56,7 +59,7 @@ const ImageThumnail = styled.div<{ $selected: boolean }>`
   border: 1px solid rgba(51, 51, 51, 0.15);
   cursor: pointer;
   transition: all 0.15s ease-in-out;
-  & > span {
+  & > img {
     opacity: 0.25 !important;
     transition: all 0.15s ease-in-out;
   }
@@ -64,13 +67,13 @@ const ImageThumnail = styled.div<{ $selected: boolean }>`
     $selected &&
     `
     border: 1px solid rgba(51, 51, 51, 0.5); 
-    & > span {
-        opacity: 1 !important;
+    & > img {
+      opacity: 1 !important;
     }
 `}
   &:hover {
     filter: brightness(0.95);
-    & > span {
+    & > img {
       opacity: 0.8 !important;
     }
   }
@@ -79,6 +82,10 @@ const ImageThumnail = styled.div<{ $selected: boolean }>`
   width: ${tokens.space["12"]};
   height: ${tokens.space["16"]};
   padding: ${tokens.space["1"]};
+
+  & > img {
+    width: 100%;
+  }
 `;
 
 const mapFn =
@@ -121,10 +128,15 @@ export const ImageCarousell = () => {
         onChange={(e) => e && setEdition(e.value)}
       />
       <Preview onClick={() => setModalOpen(true)}>
-        <Image alt={selected.alt} src={selected.src} />
+        <img alt={selected.alt} src={selected.src.src} />
       </Preview>
       <Modal open={modalOpen} onDismiss={() => setModalOpen(false)}>
-        <Image width={768} height={768} alt={selected.alt} src={selected.src} />
+        <img
+          width={768}
+          height={768}
+          alt={selected.alt}
+          src={selected.src.src}
+        />
       </Modal>
       <ImageThumbnailContainer>
         {images
@@ -136,7 +148,7 @@ export const ImageCarousell = () => {
               key={index}
               onClick={() => setSelected(image)}
             >
-              <Image quality={25} alt={image.alt} src={image.src} />
+              <img alt={image.alt} src={image.src.src} />
             </ImageThumnail>
           ))}
       </ImageThumbnailContainer>

@@ -1,6 +1,8 @@
 import { ArrowRightSVG, largerThan, tokens } from "@ensdomains/thorin";
+import { BigNumber } from "ethers";
 import Link from "next/link";
 import styled from "styled-components";
+import useSWR from "swr";
 import { TwinkleKeyframes } from "./TwinkleKeyframes";
 
 const uniswapLink =
@@ -221,13 +223,67 @@ const LimitedEditionButton = styled.a`
   `}
 `;
 
-const LimitedEdition = ({
-  price,
-  remaining,
-}: {
-  price: string;
-  remaining: number;
-}) => {
+const fetcher = (...args: Parameters<typeof fetch>) =>
+  fetch(...args).then((res) => res.json());
+
+const LimitedEdition = () => {
+  const { data: price } = useSWR(
+    "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3",
+    (url) =>
+      fetcher(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: `
+        query GetTokenPrice($pool: String!) {
+          pool(id: $pool) {
+            token0Price
+          }
+        }
+      `,
+          variables: {
+            pool: "0x9d84be498df749cefc63baa542a1d0f28471f67d",
+          },
+        }),
+      }).then((res) => res.data.pool.token0Price),
+    {
+      fallbackData: "0",
+    }
+  );
+
+  const { data: remaining } = useSWR(
+    "https://cloudflare-eth.com",
+    (url) =>
+      fetcher(url, {
+        method: "POST",
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: "eth_call",
+          params: [
+            {
+              to: "0xfFC8ca4e83416B7E0443ff430Cc245646434B647",
+              data: "0x49fb553a",
+            },
+            "latest",
+          ],
+          id: 1,
+        }),
+      })
+        .then((res) => res.result)
+        .then((copies) =>
+          BigNumber.from(copies)
+            .toNumber()
+            .toString(2)
+            .split("")
+            .reduce((prev, curr) => prev - parseInt(curr), 50)
+        ),
+    {
+      fallbackData: "50",
+    }
+  );
+
   return (
     <div>
       <LimitedEditionContainer as="div">
@@ -266,13 +322,7 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-export const EditionList = ({
-  price,
-  remaining,
-}: {
-  price: string;
-  remaining: number;
-}) => {
+export const EditionList = () => {
   return (
     <Wrapper>
       <EditionTemplate
@@ -287,7 +337,7 @@ export const EditionList = ({
         linkTitle="Buy"
         link="https://www.blurb.com/b/11110201"
       />
-      <LimitedEdition price={price} remaining={remaining} />
+      <LimitedEdition />
     </Wrapper>
   );
 };

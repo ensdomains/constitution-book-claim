@@ -1,6 +1,5 @@
 import { tokens, Typography } from "@ensdomains/thorin";
-import { BigNumber } from "ethers";
-import type { GetStaticProps, InferGetStaticPropsType, NextPage } from "next";
+import type { NextPage } from "next";
 import styled from "styled-components";
 import { EditionList } from "../components/EditionList";
 import { ImageCarousell } from "../components/ImageCarousell";
@@ -41,7 +40,7 @@ const Subtitle = styled.h3`
   color: #333333;
   font-weight: 700;
   font-size: ${tokens.fontSizes.extraLarge};
-  line-height ${tokens.lineHeights["1.375"]};
+  line-height: ${tokens.lineHeights["1.375"]};
   text-align: left;
   margin-bottom: ${tokens.space["4"]};
 
@@ -81,10 +80,7 @@ const InnerContentFlex = styled.div`
   `}
 `;
 
-const Home: NextPage = ({
-  price,
-  remainingCopies,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
+const Home: NextPage = () => {
   return (
     <Basic>
       <Heading>
@@ -102,75 +98,10 @@ const Home: NextPage = ({
       </Heading>
       <InnerContentFlex>
         <ImageCarousell />
-        <EditionList remaining={remainingCopies} price={price} />
+        <EditionList />
       </InnerContentFlex>
     </Basic>
   );
-};
-
-export const getStaticProps: GetStaticProps = async (context) => {
-  const priceData = await fetch(
-    "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: `
-        query GetTokenPrice($pool: String!) {
-          pool(id: $pool) {
-            token0Price
-          }
-        }
-      `,
-        variables: {
-          pool: "0x9d84be498df749cefc63baa542a1d0f28471f67d",
-        },
-      }),
-    }
-  ).then((res) => res.json());
-
-  let price = "?";
-
-  try {
-    price = priceData.data.pool.token0Price;
-  } catch {}
-
-  let remainingCopies = 50;
-  try {
-    const copiesData = await fetch("https://cloudflare-eth.com", {
-      method: "POST",
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "eth_call",
-        params: [
-          {
-            to: "0xfFC8ca4e83416B7E0443ff430Cc245646434B647",
-            data: "0x49fb553a",
-          },
-          "latest",
-        ],
-        id: 1,
-      }),
-    }).then((res) => res.json());
-
-    const { result: copies } = copiesData;
-
-    remainingCopies = BigNumber.from(copies)
-      .toNumber()
-      .toString(2)
-      .split("")
-      .reduce((prev, curr) => prev - parseInt(curr), 50);
-  } catch {}
-
-  return {
-    props: {
-      price,
-      remainingCopies,
-    },
-    revalidate: 60,
-  };
 };
 
 export default Home;

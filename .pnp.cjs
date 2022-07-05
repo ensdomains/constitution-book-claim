@@ -2796,6 +2796,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "npm:2.8.0"\
       ],\
       [\
+        "swr",\
+        "virtual:d78283ed2edb68483c8c4320e301e5ba4c57cdedcf03bce77b5a9631c5f95654baa5c50ab82390bc8debd49a31b957f02dded1aec7d144ef01b95f0be1eb57b1#npm:1.3.0"\
+      ],\
+      [\
         "tabbable",\
         "npm:5.3.1"\
       ],\
@@ -3019,6 +3023,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-dom", "virtual:d78283ed2edb68483c8c4320e301e5ba4c57cdedcf03bce77b5a9631c5f95654baa5c50ab82390bc8debd49a31b957f02dded1aec7d144ef01b95f0be1eb57b1#npm:18.1.0"],\
             ["sharp", "npm:0.30.4"],\
             ["styled-components", "virtual:d78283ed2edb68483c8c4320e301e5ba4c57cdedcf03bce77b5a9631c5f95654baa5c50ab82390bc8debd49a31b957f02dded1aec7d144ef01b95f0be1eb57b1#npm:5.3.5"],\
+            ["swr", "virtual:d78283ed2edb68483c8c4320e301e5ba4c57cdedcf03bce77b5a9631c5f95654baa5c50ab82390bc8debd49a31b957f02dded1aec7d144ef01b95f0be1eb57b1#npm:1.3.0"],\
             ["typescript", "patch:typescript@npm%3A4.6.4#~builtin<compat/typescript>::version=4.6.4&hash=bda367"],\
             ["wagmi", "virtual:d78283ed2edb68483c8c4320e301e5ba4c57cdedcf03bce77b5a9631c5f95654baa5c50ab82390bc8debd49a31b957f02dded1aec7d144ef01b95f0be1eb57b1#npm:0.3.5"]\
           ],\
@@ -8425,6 +8430,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["react-dom", "virtual:d78283ed2edb68483c8c4320e301e5ba4c57cdedcf03bce77b5a9631c5f95654baa5c50ab82390bc8debd49a31b957f02dded1aec7d144ef01b95f0be1eb57b1#npm:18.1.0"],\
             ["sharp", "npm:0.30.4"],\
             ["styled-components", "virtual:d78283ed2edb68483c8c4320e301e5ba4c57cdedcf03bce77b5a9631c5f95654baa5c50ab82390bc8debd49a31b957f02dded1aec7d144ef01b95f0be1eb57b1#npm:5.3.5"],\
+            ["swr", "virtual:d78283ed2edb68483c8c4320e301e5ba4c57cdedcf03bce77b5a9631c5f95654baa5c50ab82390bc8debd49a31b957f02dded1aec7d144ef01b95f0be1eb57b1#npm:1.3.0"],\
             ["typescript", "patch:typescript@npm%3A4.6.4#~builtin<compat/typescript>::version=4.6.4&hash=bda367"],\
             ["wagmi", "virtual:d78283ed2edb68483c8c4320e301e5ba4c57cdedcf03bce77b5a9631c5f95654baa5c50ab82390bc8debd49a31b957f02dded1aec7d144ef01b95f0be1eb57b1#npm:0.3.5"]\
           ],\
@@ -13142,6 +13148,28 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["csso", "npm:4.2.0"],\
             ["picocolors", "npm:1.0.0"],\
             ["stable", "npm:0.1.8"]\
+          ],\
+          "linkType": "HARD"\
+        }]\
+      ]],\
+      ["swr", [\
+        ["npm:1.3.0", {\
+          "packageLocation": "./.yarn/cache/swr-npm-1.3.0-3a8f9fadf5-e7a184f0d5.zip/node_modules/swr/",\
+          "packageDependencies": [\
+            ["swr", "npm:1.3.0"]\
+          ],\
+          "linkType": "SOFT"\
+        }],\
+        ["virtual:d78283ed2edb68483c8c4320e301e5ba4c57cdedcf03bce77b5a9631c5f95654baa5c50ab82390bc8debd49a31b957f02dded1aec7d144ef01b95f0be1eb57b1#npm:1.3.0", {\
+          "packageLocation": "./.yarn/__virtual__/swr-virtual-ee4d65c67c/0/cache/swr-npm-1.3.0-3a8f9fadf5-e7a184f0d5.zip/node_modules/swr/",\
+          "packageDependencies": [\
+            ["swr", "virtual:d78283ed2edb68483c8c4320e301e5ba4c57cdedcf03bce77b5a9631c5f95654baa5c50ab82390bc8debd49a31b957f02dded1aec7d144ef01b95f0be1eb57b1#npm:1.3.0"],\
+            ["@types/react", "npm:18.0.8"],\
+            ["react", "npm:18.1.0"]\
+          ],\
+          "packagePeers": [\
+            "@types/react",\
+            "react"\
           ],\
           "linkType": "HARD"\
         }]\
