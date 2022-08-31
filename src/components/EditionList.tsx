@@ -329,7 +329,7 @@ export const EditionList = () => {
         tags={["Free"]}
         name="Digital Edition"
         linkTitle="Download"
-        link="https://ensdao.eth.link/constitution.pdf"
+        link="https://ensdao.eth.limo/constitution.pdf"
       />
       <EditionTemplate
         tags={["$114.39"]}
