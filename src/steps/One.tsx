@@ -73,7 +73,7 @@ export const StepOne = ({ setStep }: { setStep: (step: number) => void }) => {
         <Main />
         {unclaimedBalance > 0 && (
           <Link
-            href="https://gnosis-auction.eth.link/#/auction?auctionId=231&chainId=1%23topAnchor"
+            href="https://gnosis-auction.eth.limo/#/auction?auctionId=231&chainId=1%23topAnchor"
             passHref
           >
             <a>
